@@ -324,23 +324,23 @@ const LawyerExplained = () => {
   return (
     <section className="relative w-full h-[650px] flex items-center justify-center bg-[#FBF8F2] border-b-[3px] border-[#B89A6A] overflow-hidden watermark-bg reveal-on-scroll">
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-75 transition-all duration-700 z-0"
+        className="absolute inset-0 h-[650px] bg-cover bg-center opacity-75 transition-all duration-700 z-0"
         style={{ backgroundImage: `url('${HeroBG}` }}
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#FBF8F2] to-transparent z-0"></div>
       
       {/* 5. Flashcard size increased (max-w-6xl, p-12/p-16) */}
-      <div className="relative z-10 w-full max-w-5xl px-4">
-        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-12 md:p-16 relative">
-          <div className={`flex flex-col md:flex-row items-center gap-12 ${current % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+      <div className="relative z-10 w-full h-[550px] max-w-5xl px-4">
+        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-12 md:p-16 relative h-[450px]">
+          <div className={`flex flex-col md:flex-row items-center gap-2 md:gap-12 ${current % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
             <div className={`flex-1 text-center ${current % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
-              <p className="text-3xl md:text-5xl font-serif italic text-[#785F3F] mb-6 leading-tight">“{currentLawyer.quote}”</p>
-              <h3 className="text-3xl font-bold text-[#B89A6A]">{currentLawyer.name}</h3>
+              <p className="text-sm md:text-2xl font-serif italic text-[#785F3F] mb-6 leading-tight">“{currentLawyer.quote}”</p>
+              <h3 className="text-xl font-bold text-[#B89A6A]">{currentLawyer.name}</h3>
               <p className="text-sm text-[#D2C4AE] font-bold uppercase tracking-widest mb-5">{currentLawyer.title}</p>
-              <p className="text-[#785F3F] leading-relaxed max-w-xl mx-auto md:mx-0 text-lg">{currentLawyer.desc}</p>
+              <p className="text-[#785F3F] leading-relaxed max-w-xl mx-auto md:mx-0 text-sm">{currentLawyer.desc}</p>
             </div>
             
-            <div className="relative w-64 h-64 md:w-80 md:h-80 shrink-0 rounded-full border-[8px] border-[#E9E3D9] shadow-2xl overflow-hidden bg-[#E9E3D9]">
+            <div className="relative w-34 h-34 md:w-80 md:h-80 shrink-0 rounded-full border-[8px] border-[#E9E3D9] shadow-2xl overflow-hidden bg-[#E9E3D9]">
                <img src={getImgSrc(currentLawyer.image)} alt={currentLawyer.name} className="w-full h-full object-cover relative z-10" />
             </div>
           </div>
