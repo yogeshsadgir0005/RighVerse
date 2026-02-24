@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios, { BASE_URL } from '../utils/axios';
 import { Link, useNavigate } from 'react-router-dom';
-import HeroBG from "../assets/HeroBG.png";
+import HeroBG from "../assets/heroBG.png";
 import { 
   X, Shield, Scale, FileText, User, Lock, 
   Phone, BookOpen, Globe, Briefcase as BriefcaseIcon, 
