@@ -331,7 +331,7 @@ const LawyerExplained = () => {
       
       {/* 5. Flashcard size increased (max-w-6xl, p-12/p-16) */}
       <div className="relative z-10 w-full h-[550px] max-w-5xl px-4">
-        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-12 md:p-16 relative h-[450px]">
+        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-6 md:p-16 relative h-[490px]">
           <div className={`flex flex-col md:flex-row items-center gap-2 md:gap-12 ${current % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
             <div className={`flex-1 text-center ${current % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
               <p className="text-sm md:text-2xl font-serif italic text-[#785F3F] mb-6 leading-tight">“{currentLawyer.quote}”</p>
