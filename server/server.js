@@ -21,7 +21,8 @@ const allowedorigins = [
 "http://localhost:5173",
 "http://localhost:5174",
 'https://righ-verse.vercel.app',
-'https://righ-verse-e4ql.vercel.app'
+'https://righ-verse-e4ql.vercel.app/'
+
 ]
 
 app.use(cors({

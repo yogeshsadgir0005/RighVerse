@@ -206,32 +206,45 @@ exports.getWeeklyLaws = async (req, res) => {
   }
 };
 
-// 3. Story Analysis (Moderation)
+// --- FIX: UPDATED STORY ANALYSIS PROMPT ---
 exports.analyzeStory = async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ message: "Story text is required" });
 
   try {
     const prompt = `
-      Analyze this user story for a legal awareness platform.
+      Analyze this user story for a public legal awareness platform.
       Input: "${text}"
       
       Tasks:
-      1. **Anonymize**: Replace names/phones/locations with placeholders like [Name].
-      2. **Insight**: Provide a 1-sentence legal insight (e.g. "This implies harassment under Section 354 IPC").
-      3. **Safety**: Flag 'isToxic': true ONLY if it contains hate speech/threats (not just describing a crime).
+      1. **Toxicity Check (CRITICAL)**: If the input contains ANY profanity, swear words, abusive language, explicit content, or hate speech, you MUST set 'isToxic': true and provide a 'toxicReason'.
+      2. **Title Generation**: Create a short, professional, anonymized title (3-6 words) representing the core legal issue.
+      3. **Anonymize Body**: If NOT toxic, replace personal names, exact locations, or company names with placeholders like [Name], [Location], etc. 
+      4. **Insight**: Provide a 1-sentence basic legal insight based on Indian law.
 
-      Output JSON: { "redactedStory": "...", "insight": "...", "isToxic": boolean, "toxicReason": "..." }
+      Output JSON EXACTLY in this format:
+      {
+        "isToxic": boolean,
+        "toxicReason": "string (or null if false)",
+        "title": "string",
+        "redactedStory": "string",
+        "insight": "string"
+      }
     `;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
+      messages: [
+        { role: "system", content: "You are a helpful AI Legal Assistant. You output strictly valid JSON." },
+        { role: "user", content: prompt }
+      ],
+      response_format: { type: "json_object" } // Guarantees JSON output
     });
 
-    const result = JSON.parse(completion.choices[0].message.content.replace(/```json|```/g, '').trim());
+    const result = JSON.parse(completion.choices[0].message.content.trim());
     res.status(200).json(result);
   } catch (error) {
+    console.error("AI Analysis Failed:", error);
     res.status(500).json({ message: "AI Analysis Failed" });
   }
 };

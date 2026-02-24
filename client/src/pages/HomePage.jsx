@@ -542,41 +542,80 @@ const KnowWhatToDo = ({ guides = [] }) => {
   );
 };
 
+
 const SubmitStorySection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [storyTitle, setStoryTitle] = useState("");
-  const [storyContent, setStoryContent] = useState("");
-  const [storyCategory, setStoryCategory] = useState("");
+  const [formData, setFormData] = useState({ title: '', category: 'Other', location: '', story: '' });
   const [consentGiven, setConsentGiven] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [posting, setPosting] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!consentGiven || !storyContent.trim()) return;
-    setSubmitting(true);
+  const containsBadWords = (text) => {
+      const badWords = ['fuck', 'shit', 'bitch', 'asshole', 'bastard', 'cunt', 'dick', 'pussy', 'slut', 'whore', 'motherfucker', 'madarchod', 'bhenchod', 'chutiya', 'mc', 'bc', 'randi'];
+      const lower = text.toLowerCase();
+      return badWords.some(word => lower.includes(word));
+  };
+
+  const handleAnalyze = async () => {
+    if (!formData.story.trim() || !formData.title.trim() || !consentGiven) return;
+    
+    if (containsBadWords(formData.title + " " + formData.story)) {
+        setAnalysisResult({ 
+            isToxic: true, 
+            toxicReason: "Your content contains inappropriate or offensive language. Please remove profanity before posting." 
+        });
+        return;
+    }
+
+    setAnalyzing(true);
     try {
-      await axios.post('/stories', {
-        title: storyTitle || "Untitled Experience",
-        content: storyContent,
-        category: storyCategory || "General",
-        isAnonymous: true,
-        consent: consentGiven
+      const res = await axios.post('/ai/analyze-story', { 
+          title: formData.title,
+          text: formData.story 
       });
+      setAnalysisResult(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("AI Analysis failed. Please try again.");
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
+  const handlePost = async () => {
+    if (!analysisResult) return;
+    setPosting(true);
+    try {
+      // Syncing payload specifically with the expected fields of backend storyController.js
+      await axios.post('/stories', {
+        title: analysisResult.redactedTitle || formData.title, 
+        content: formData.story, // Required by backend validator
+        category: formData.category,
+        location: formData.location || "India",
+        consent: consentGiven // Required by backend validator
+      });
+      
       setIsModalOpen(false);
+      setFormData({ title: '', category: 'Other', location: '', story: '' });
+      setConsentGiven(false);
+      setAnalysisResult(null);
+      
+      // Pass success message to YourVoice route
       navigate('/your-voice', { state: { message: "Thank you for sharing your story. Your voice can help others." } });
     } catch (err) {
-      console.error("Submission failed", err);
-      alert("Failed to submit story. Please try again.");
+      console.error("Post failed", err);
+      alert(err.response?.data?.message || "Failed to save story.");
     } finally {
-      setSubmitting(false);
+      setPosting(false);
     }
   };
 
   return (
     <>
       <section className="py-24 flex justify-center bg-[#FBF8F2] relative watermark-bg px-4">
-        <div className="w-full max-w-4xl bg-[#E9E3D9] rounded-[24px] p-12 md:p-16 relative overflow-hidden shadow-sm border border-[#D2C4AE] story-panel-reveal text-center">
+        <div className="w-full max-w-4xl bg-[#E9E3D9] rounded-[24px] p-12 md:p-16 relative overflow-hidden shadow-sm border border-[#D2C4AE] text-center">
           <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")`}}></div>
           <div className="relative z-10 flex flex-col items-center">
             <div className="inline-flex items-center gap-2 bg-[#F5F1E8] text-[#B89A6A] border border-[#B89A6A]/40 px-4 py-1.5 rounded-full text-xs font-bold mb-8 tracking-wider shadow-sm uppercase">
@@ -587,7 +626,7 @@ const SubmitStorySection = () => {
             <p className="text-[#785F3F]/80 mb-10 leading-relaxed text-lg max-w-xl mx-auto font-medium">
               This is a safe space. Share your legal hurdles or experiences anonymously. Your voice can guide and empower others facing similar challenges.
             </p>
-            <button onClick={() => setIsModalOpen(true)} className="btn-write-story bg-[#333333] border border-transparent text-[#F5F1E8] px-8 py-4 rounded-full flex items-center gap-3 mx-auto font-bold tracking-wider text-sm uppercase">
+            <button onClick={() => setIsModalOpen(true)} className="bg-[#333333] border border-transparent text-[#F5F1E8] px-8 py-4 rounded-full flex items-center gap-3 mx-auto font-bold tracking-wider text-sm uppercase shadow-lg hover:shadow-[0_0_15px_rgba(198,167,106,0.5)] hover:-translate-y-0.5 transition-all">
               <FileText size={18} /> Write Your Story
             </button>
           </div>
@@ -595,49 +634,151 @@ const SubmitStorySection = () => {
       </section>
       
       {isModalOpen && (
-        <div className="fixed inset-0 story-modal-overlay z-50 flex items-center justify-center p-4">
-          <div className="story-modal-content bg-[#FBF8F2] rounded-[24px] p-8 md:p-10 w-full max-w-2xl relative shadow-[0_30px_60px_rgba(0,0,0,0.3)] border border-[#B89A6A]/50 flex flex-col max-h-[90vh]">
-            <div className="flex justify-between items-start mb-6 border-b border-[#D2C4AE]/50 pb-5 shrink-0">
-              <div>
-                <h3 className="text-3xl font-bold font-serif text-[#785F3F] mb-2">Share Your Experience</h3>
-                <p className="text-sm text-[#B89A6A] font-semibold flex items-center gap-2 uppercase tracking-widest"><Lock size={14} /> Identity remains anonymous</p>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+              <div className="bg-[#FBF8F2] rounded-[24px] p-8 md:p-10 w-full max-w-2xl relative shadow-[0_30px_60px_rgba(0,0,0,0.3)] border border-[#B89A6A]/50 flex flex-col max-h-[90vh]">
+                  <div className="flex justify-between items-start mb-6 border-b border-[#D2C4AE]/50 pb-5 shrink-0">
+                    <div>
+                      <h3 className="text-3xl font-bold font-serif text-[#785F3F] mb-2">Share Your Experience</h3>
+                      <p className="text-sm text-[#B89A6A] font-semibold flex items-center gap-2 uppercase tracking-widest"><Lock size={14} /> Identity remains anonymous</p>
+                    </div>
+                    <button onClick={() => { setIsModalOpen(false); setAnalysisResult(null); }} className="text-[#D2C4AE] hover:text-[#785F3F] transition-colors p-2 bg-[#E9E3D9] rounded-full">
+                      <X size={20}/>
+                    </button>
+                  </div>
+
+                  {!analysisResult ? (
+                    <div className="flex flex-col flex-1 overflow-y-auto pr-2">
+                      <div className="bg-[#E9E3D9] p-4 rounded-xl mb-6 text-sm text-[#785F3F] flex gap-3 border border-[#D2C4AE]">
+                        <Shield size={20} className="shrink-0 mt-0.5 text-[#B89A6A]" />
+                        <p className="leading-relaxed"><strong className="text-[#B89A6A]">Privacy First:</strong> Your identity is safe. Our AI will automatically remove names, phone numbers, and addresses before anyone sees this.</p>
+                      </div>
+
+                      <div className="flex flex-col gap-5 mb-6">
+                        <div>
+                          <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Story Title (Optional)</label>
+                          <input 
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => setFormData({...formData, title: e.target.value})}
+                            placeholder="E.g., Unfair dismissal at my workplace"
+                            className="w-full border border-[#D2C4AE] bg-white p-4 rounded-xl focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] text-[#785F3F] font-medium shadow-sm"
+                          />
+                        </div>
+                        <div className="flex gap-4">
+                           <div className="w-1/2">
+                             <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Category (Optional)</label>
+                             <select 
+                               value={formData.category}
+                               onChange={(e) => setFormData({...formData, category: e.target.value})}
+                               className="w-full border border-[#D2C4AE] bg-white p-4 rounded-xl focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] text-[#785F3F] font-medium shadow-sm"
+                             >
+                                {/* Synced perfectly with YourVoice.jsx Categories */}
+                                <option value="Other">Select a category</option>
+                                <option value="Workplace">Workplace & Labour</option>
+                                <option value="Property">Property & Tenancy</option>
+                                <option value="Consumer">Consumer Rights</option>
+                                <option value="Cyber">Cyber & Privacy</option>
+                                <option value="Other">Other</option>
+                             </select>
+                           </div>
+                           <div className="w-1/2">
+                             <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Location (Optional)</label>
+                             <input 
+                               type="text"
+                               value={formData.location}
+                               onChange={(e) => setFormData({...formData, location: e.target.value})}
+                               placeholder="City/State"
+                               className="w-full border border-[#D2C4AE] bg-white p-4 rounded-xl focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] text-[#785F3F] font-medium shadow-sm"
+                             />
+                           </div>
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Your Story</label>
+                          <textarea 
+                            value={formData.story}
+                            onChange={(e) => setFormData({...formData, story: e.target.value})}
+                            placeholder="Share what happened..." 
+                            className="w-full border border-[#D2C4AE] bg-white p-5 rounded-xl h-48 focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] resize-none text-[#785F3F] text-base leading-relaxed shadow-sm" 
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Consent Checkbox */}
+                      <div className="flex items-start gap-4 mb-6 bg-[#F5F1E8] p-5 rounded-xl border border-[#D2C4AE]">
+                        <input 
+                          type="checkbox" 
+                          id="consent" 
+                          checked={consentGiven} 
+                          onChange={(e) => setConsentGiven(e.target.checked)} 
+                          className="mt-1 shrink-0 accent-[#B89A6A] w-5 h-5 cursor-pointer"
+                        />
+                        <label htmlFor="consent" className="text-sm text-[#785F3F] leading-relaxed cursor-pointer font-medium select-none">
+                          I consent to sharing this story anonymously. I understand that AI will remove identifiable information, but the core narrative will be visible to help others.
+                        </label>
+                      </div>
+
+                      <div className="mt-auto shrink-0 pb-2">
+                        <button 
+                          onClick={handleAnalyze} 
+                          disabled={analyzing || !formData.story.trim() || !formData.title.trim() || !consentGiven}
+                          className="w-full bg-[#333333] text-white py-4 rounded-full hover:bg-[#B89A6A] transition-all flex justify-center items-center gap-2 font-bold text-sm uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                        >
+                           {analyzing ? <Loader2 className="animate-spin" size={20} /> : <><Sparkles size={18} className="text-[#C6A76A]"/> Analyze & Anonymize</>}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col flex-1 overflow-y-auto animate-in slide-in-from-bottom-4 duration-300">
+                       {analysisResult.isToxic ? (
+                         <div className="bg-[#8C2F2F]/10 border border-[#8C2F2F]/20 p-8 rounded-2xl mb-6 text-center shadow-inner">
+                            <ShieldAlert size={48} className="text-[#8C2F2F] mx-auto mb-4" />
+                            <h4 className="font-bold text-[#8C2F2F] text-2xl mb-2 font-serif">Content Flagged</h4>
+                            <p className="text-base text-[#8C2F2F]/80 mb-6 font-medium">{analysisResult.toxicReason}</p>
+                            <button onClick={() => setAnalysisResult(null)} className="mt-4 px-6 py-2.5 rounded-full border border-[#8C2F2F] text-sm font-bold text-[#8C2F2F] hover:bg-[#8C2F2F] hover:text-white transition-colors">Edit Story</button>
+                         </div>
+                       ) : (
+                         <>
+                           <div className="bg-[#E9E3D9] border border-[#D2C4AE] p-6 rounded-2xl mb-8 shadow-sm">
+                              <h4 className="font-bold text-[#B89A6A] text-sm flex items-center gap-2 mb-3 uppercase tracking-widest">
+                                <Sparkles size={16} className="text-[#B89A6A]"/> Legal Insight
+                              </h4>
+                              <p className="text-base text-[#785F3F] leading-relaxed font-medium">
+                                "{analysisResult.insight}"
+                              </p>
+                           </div>
+
+                           <label className="text-xs font-bold uppercase text-[#D2C4AE] mb-3 block tracking-widest">Public Preview (Anonymized)</label>
+                           
+                           <div className="bg-white border border-[#D2C4AE] p-6 rounded-2xl mb-8 shadow-inner overflow-y-auto max-h-56">
+                              <h5 className="font-bold font-serif text-xl text-[#785F3F] mb-3 leading-snug">
+                                {analysisResult.redactedTitle || formData.title}
+                              </h5>
+                              <p className="text-base text-[#785F3F]/90 leading-relaxed italic">
+                                "{analysisResult.redactedStory}"
+                              </p>
+                           </div>
+
+                           <div className="mt-auto grid grid-cols-2 gap-5 shrink-0 pb-2">
+                             <button 
+                               onClick={() => setAnalysisResult(null)} 
+                               className="px-6 py-4 rounded-full border-2 border-[#D2C4AE] text-[#785F3F] hover:bg-[#E9E3D9] font-bold transition-colors uppercase tracking-widest text-sm"
+                             >
+                               Edit
+                             </button>
+                             <button 
+                               onClick={handlePost} 
+                               disabled={posting}
+                               className="px-6 py-4 rounded-full bg-[#333333] text-white hover:bg-[#B89A6A] font-bold flex justify-center items-center gap-2 disabled:opacity-70 transition-colors uppercase tracking-widest text-sm shadow-md"
+                             >
+                               {posting ? <Loader2 className="animate-spin" size={20} /> : <><CheckCircle size={20} className="text-[#C6A76A]" /> Confirm Post</>}
+                             </button>
+                           </div>
+                         </>
+                       )}
+                    </div>
+                  )}
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-[#D2C4AE] hover:text-[#785F3F] transition-colors p-2 bg-[#E9E3D9] rounded-full"><X size={20}/></button>
-            </div>
-            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-y-auto pr-2 gap-5">
-              <div>
-                <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Story Title (Optional)</label>
-                <input type="text" value={storyTitle} onChange={(e) => setStoryTitle(e.target.value)} placeholder="E.g., Unfair dismissal at my workplace" className="w-full border border-[#D2C4AE] bg-white p-4 rounded-xl focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] text-[#785F3F] font-medium shadow-sm"/>
-              </div>
-              <div>
-                <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Category (Optional)</label>
-                <select value={storyCategory} onChange={(e) => setStoryCategory(e.target.value)} className="w-full border border-[#D2C4AE] bg-white p-4 rounded-xl focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] text-[#785F3F] font-medium shadow-sm">
-                  <option value="">Select a category</option>
-                  <option value="Workplace">Workplace & Labour</option>
-                  <option value="Property">Property & Tenancy</option>
-                  <option value="Consumer">Consumer Rights</option>
-                  <option value="Cyber">Cyber & Privacy</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-bold uppercase text-[#785F3F] mb-2 block tracking-widest">Your Story</label>
-                <textarea required value={storyContent} onChange={(e) => setStoryContent(e.target.value)} placeholder="Share what happened..." className="w-full border border-[#D2C4AE] bg-white p-5 rounded-xl h-48 focus:outline-none focus:border-[#B89A6A] focus:ring-1 focus:ring-[#B89A6A] resize-none text-[#785F3F] text-base leading-relaxed shadow-sm" />
-              </div>
-              <div className="flex items-start gap-4 mt-2 bg-[#E9E3D9] p-5 rounded-xl border border-[#D2C4AE]">
-                <input type="checkbox" id="consent" required checked={consentGiven} onChange={(e) => setConsentGiven(e.target.checked)} className="mt-1 shrink-0 accent-[#B89A6A] w-5 h-5 cursor-pointer"/>
-                <label htmlFor="consent" className="text-sm text-[#785F3F] leading-relaxed cursor-pointer font-medium select-none">
-                  I consent to sharing this story anonymously. I understand that AI will remove identifiable information, but the core narrative will be visible to help others.
-                </label>
-              </div>
-              <div className="mt-6 shrink-0 pb-2">
-                <button type="submit" disabled={submitting || !consentGiven || !storyContent.trim()} className="w-full bg-[#333333] text-white py-4 rounded-full hover:bg-[#B89A6A] transition-all flex justify-center items-center gap-2 font-bold text-sm uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg">
-                  {submitting ? <Loader2 className="animate-spin" size={20} /> : "Submit Anonymously"}
-                </button>
-              </div>
-            </form>
           </div>
-        </div>
       )}
     </>
   );
