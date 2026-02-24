@@ -444,7 +444,7 @@ const CitizenLibrary = () => (
         {CITIZEN_CATS.map((cat, idx) => (
           <Link
             key={idx}
-            to={`/law-library/citizens?category=${encodeURIComponent(cat.name)}`}
+            to={`/law-library/citizens?category=${encodeURIComponent(cat.name)}+Law&sort=relevance&page=1`}
             className="flex flex-col items-center min-w-[100px] shrink-0 snap-center lg:snap-none group story-category"
             style={{ animationDelay: `${idx * 60}ms` }}
           >
