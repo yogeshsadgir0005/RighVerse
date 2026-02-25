@@ -465,7 +465,7 @@ const CitizenLibrary = () => (
   <section className="py-20 bg-[#FBF8F2] watermark-bg reveal-on-scroll">
     <div className="text-center mb-16 relative z-10">
       <h2 className="text-4xl md:text-5xl font-serif text-[#B89A6A] font-bold">Law Library</h2>
-      <p className="text-[#785F3F] mt-4 text-lg">Your Digital Gateway to Legal Knowledge through Digital Law Library</p>
+      <p className="text-[#785F3F] mt-4 text-lg">Your Gateway to Legal Knowledge through Digital Law Library</p>
     </div>
     
     {/* 7. Story-Style Category Design */}

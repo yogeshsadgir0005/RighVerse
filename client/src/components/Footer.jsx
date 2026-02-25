@@ -59,15 +59,15 @@ export default function Footer() {
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Connect</h4>
             <ul className="space-y-5 text-[15px] mb-8 font-medium text-[#D2C4AE]">
               <li>
-                <a href="mailto:support@rightverse.in" className="flex items-center gap-4 hover:text-[#B89A6A] transition-colors group">
+                <a href="mailto:amatul27safura@gmail.com" className="flex items-center gap-4 hover:text-[#B89A6A] transition-colors group">
                   <span className="p-2.5 bg-[#333333] rounded-full group-hover:bg-[#B89A6A] group-hover:text-white transition-all duration-300 border border-[#333333] group-hover:border-[#B89A6A] shadow-sm"><Mail size={16}/></span>
-                  <span>support@rightverse.in</span>
+                  <span>amatul27safura@gmail.com</span>
                 </a>
               </li>
               <li>
-                <a href="tel:+91XXXXXXXX" className="flex items-center gap-4 hover:text-[#B89A6A] transition-colors group">
+                <a href="tel:+919371192765" className="flex items-center gap-4 hover:text-[#B89A6A] transition-colors group">
                    <span className="p-2.5 bg-[#333333] rounded-full group-hover:bg-[#B89A6A] group-hover:text-white transition-all duration-300 border border-[#333333] group-hover:border-[#B89A6A] shadow-sm"><Phone size={16}/></span>
-                  <span>+91 XXXXXXXX</span>
+                  <span>+91 9371192765</span>
                 </a>
               </li>
             </ul>
