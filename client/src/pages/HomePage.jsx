@@ -319,6 +319,15 @@ const LawyerExplained = () => {
       .catch(err => console.error("Error fetching hero settings", err));
   }, []);
 
+  // --- Infinite Loop Handlers ---
+  const nextLawyer = () => {
+    setCurrent((prev) => (prev + 1) % heroData.lawyers.length);
+  };
+
+  const prevLawyer = () => {
+    setCurrent((prev) => (prev - 1 + heroData.lawyers.length) % heroData.lawyers.length);
+  };
+
   const currentLawyer = heroData.lawyers[current];
   const getImgSrc = (img) => img?.startsWith('/uploads') ? `${BASE_URL}${img}` : img;
 
@@ -326,14 +335,24 @@ const LawyerExplained = () => {
     <section className="relative w-full h-[650px] scrollbar-hide flex items-center justify-center bg-[#FBF8F2] border-b-[3px] border-[#B89A6A] overflow-hidden watermark-bg reveal-on-scroll">
       <div 
         className="absolute inset-0 h-[650px] scrollbar-hide bg-cover bg-center opacity-75 transition-all duration-700 z-0"
-        style={{ backgroundImage: `url('${HeroBG}` }}
+        style={{ backgroundImage: `url('${HeroBG}')` }}
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#504e4a] to-transparent z-0"></div>
       
-      {/* 5. Flashcard size increased (max-w-6xl, p-12/p-16) */}
-      <div className="relative z-10 w-full h-[550px] max-w-5xl px-4">
-        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-6 md:p-16 relative h-[490px]">
-          <div className={`flex flex-col md:flex-row items-center gap-2 md:gap-12 ${current % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
+      {/* Flashcard Container */}
+      <div className="relative z-10 w-full h-[550px] max-w-5xl px-4 mx-auto">
+        <div className="bg-[#FFFFFF] border border-[#D2C4AE] shadow-[0_20px_50px_rgba(184,154,106,0.1)] rounded-[24px] p-6 md:p-16 relative h-[490px] flex items-center group">
+          
+          {/* Left Navigation Arrow (<) */}
+          <button 
+            onClick={prevLawyer}
+            className="absolute left-2 md:-left-6 top-1/2 -translate-y-1/2 z-20 bg-[#FBF8F2] border border-[#D2C4AE] text-[#B89A6A] hover:bg-[#B89A6A] hover:text-white hover:border-[#B89A6A] p-2 md:p-4 rounded-full shadow-lg transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+
+          {/* Lawyer Content */}
+          <div className={`w-full flex flex-col md:flex-row items-center gap-2 md:gap-12 ${current % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}>
             <div className={`flex-1 text-center ${current % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
               <p className="text-sm md:text-2xl font-serif italic text-[#785F3F] mb-6 leading-tight">“{currentLawyer.quote}”</p>
               <h3 className="text-xl font-bold text-[#B89A6A]">{currentLawyer.name}</h3>
@@ -345,8 +364,18 @@ const LawyerExplained = () => {
                <img src={getImgSrc(currentLawyer.image)} alt={currentLawyer.name} className="w-full h-full object-cover relative z-10" />
             </div>
           </div>
+
+          {/* Right Navigation Arrow (>) */}
+          <button 
+            onClick={nextLawyer}
+            className="absolute right-2 md:-right-6 top-1/2 -translate-y-1/2 z-20 bg-[#FBF8F2] border border-[#D2C4AE] text-[#B89A6A] hover:bg-[#B89A6A] hover:text-white hover:border-[#B89A6A] p-2 md:p-4 rounded-full shadow-lg transition-all duration-300 md:opacity-0 md:group-hover:opacity-100 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+
         </div>
 
+        {/* Bottom Pagination Dots */}
         <div className="flex justify-center gap-4 mt-12">
           {heroData.lawyers.map((_, idx) => (
             <button 
