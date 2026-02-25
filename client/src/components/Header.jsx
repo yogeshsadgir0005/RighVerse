@@ -99,7 +99,7 @@ export default function Header() {
         }
       `}</style>
 
-      <header className="fixed top-0 left-0 w-full z-50 bg-[#F5F1E8] shadow-[0_2px_10px_rgba(120,95,63,0.05)] font-sans transition-all duration-300">
+      <header className="fixed top-0 left-0 w-full z-50 bg-[#F5F1E8] shadow-[0_2px_10px_rgba(120,95,63,0.05)] font-sans transition-all duration-300 border-b-[3px] border-[#B89A6A]">
         
 
 
