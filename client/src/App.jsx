@@ -21,10 +21,11 @@ import HelpResources from './pages/HelpResources';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import AIChatbot from './components/AIChatbot'; // <--- 1. Import the Chatbot here
-
+import ScrollToTop from './components/ScrollToTop';
 export default function App() {
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-1">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios, { BASE_URL } from '../utils/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import HeroBG from "../assets/heroBG.png";
+import stambhlogo from "../assets/image.png"
 import { 
   X, Shield, Scale, FileText, User, Lock, 
   Phone, BookOpen, Globe, Briefcase as BriefcaseIcon, 
@@ -105,7 +106,7 @@ const guidesRes = await axios.get('/action-guides').catch(() => ({ data: [] }));
   if (loading) return <div className="h-screen flex items-center justify-center bg-[#F5F1E8]"><Loader2 className="animate-spin text-[#B89A6A]" size={40} /></div>;
 
   return (
-    <div className="min-h-screen bg-[#FBF8F2] font-sans text-[#785F3F] selection:bg-[#B89A6A]/30 relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FBF8F2] font-sans text-[#785F3F] selection:bg-[#B89A6A]/30 relative overflow-x-hidden scrollbar-hide">
       <style>{`
         .watermark-bg { position: relative; overflow: hidden; }
         .watermark-bg::before {
@@ -222,7 +223,7 @@ const guidesRes = await axios.get('/action-guides').catch(() => ({ data: [] }));
             <span className="bg-[#E9E3D9] text-[#785F3F] text-xs font-bold px-3 py-1.5 rounded-full border border-[#D2C4AE]">AI CURATED</span>
           </div>
           <p className="text-[#785F3F] mb-14 relative z-10 text-lg text-center md:text-left">
-             Quick scan updates and insights from the past week.
+           Timely News and Insights to keep you aware and Updated  
           </p>
           
           {newsList.length > 0 ? (
@@ -322,12 +323,12 @@ const LawyerExplained = () => {
   const getImgSrc = (img) => img?.startsWith('/uploads') ? `${BASE_URL}${img}` : img;
 
   return (
-    <section className="relative w-full h-[650px] flex items-center justify-center bg-[#FBF8F2] border-b-[3px] border-[#B89A6A] overflow-hidden watermark-bg reveal-on-scroll">
+    <section className="relative w-full h-[650px] scrollbar-hide flex items-center justify-center bg-[#FBF8F2] border-b-[3px] border-[#B89A6A] overflow-hidden watermark-bg reveal-on-scroll">
       <div 
-        className="absolute inset-0 h-[650px] bg-cover bg-center opacity-75 transition-all duration-700 z-0"
+        className="absolute inset-0 h-[650px] scrollbar-hide bg-cover bg-center opacity-75 transition-all duration-700 z-0"
         style={{ backgroundImage: `url('${HeroBG}` }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#FBF8F2] to-transparent z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-[#504e4a] to-transparent z-0"></div>
       
       {/* 5. Flashcard size increased (max-w-6xl, p-12/p-16) */}
       <div className="relative z-10 w-full h-[550px] max-w-5xl px-4">
@@ -435,7 +436,7 @@ const CitizenLibrary = () => (
   <section className="py-20 bg-[#FBF8F2] watermark-bg reveal-on-scroll">
     <div className="text-center mb-16 relative z-10">
       <h2 className="text-4xl md:text-5xl font-serif text-[#B89A6A] font-bold">Law Library</h2>
-      <p className="text-[#785F3F] mt-4 text-lg">Select a category to explore citizen rights or lawyer references.</p>
+      <p className="text-[#785F3F] mt-4 text-lg">Your Digital Gateway to Legal Knowledge through Digital Law Library</p>
     </div>
     
     {/* 7. Story-Style Category Design */}
@@ -488,7 +489,7 @@ const KnowWhatToDo = ({ guides = [] }) => {
                 <p className="text-base text-[#785F3F]/80 leading-relaxed mb-8 flex-1">Tap to view step-by-step guidance on your immediate rights and required legal actions.</p>
                 
                 <span className="text-sm font-bold text-[#B89AAA] group-hover:text-[#B89A6A] flex items-center gap-2 transition-colors mt-auto uppercase tracking-widest">
-                  Now what to do ? <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  FIND WHAT YOU NEED!<span className="group-hover:translate-x-1 transition-transform">→</span>
                 </span>
               </div>
             )) : (
@@ -541,6 +542,7 @@ const KnowWhatToDo = ({ guides = [] }) => {
     </>
   );
 };
+
 
 
 const SubmitStorySection = () => {
@@ -615,16 +617,22 @@ const SubmitStorySection = () => {
   return (
     <>
       <section className="py-24 flex justify-center bg-[#FBF8F2] relative watermark-bg px-4">
-        <div className="w-full max-w-4xl bg-[#E9E3D9] rounded-[24px] p-12 md:p-16 relative overflow-hidden shadow-sm border border-[#D2C4AE] text-center">
+        <div className="w-full max-w-4xl bg-[#E9E3D9] rounded-[48px] p-12 md:p-16 relative overflow-hidden shadow-4xl border border-[#b09f81] text-center">
           <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")`}}></div>
           <div className="relative z-10 flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 bg-[#F5F1E8] text-[#B89A6A] border border-[#B89A6A]/40 px-4 py-1.5 rounded-full text-xs font-bold mb-8 tracking-wider shadow-sm uppercase">
-               <Shield size={14}/> AI Protected Space
-            </div>
-            <div className="mb-6 text-[#B89A6A]"><PenTool size={42} strokeWidth={1} /></div>
+       <div className="hidden md:flex animate-right-pic mb-6 w-24 h-24 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
+                   <img 
+                      src={stambhlogo} 
+                      alt="Ashoka Emblem" 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100/E9E3D9/B89A6A?text=Emblem" }} 
+                   />
+                </div>
+
+
             <h2 className="text-4xl md:text-5xl font-serif mb-4 text-[#785F3F] font-bold">Submit Your Story</h2>
             <p className="text-[#785F3F]/80 mb-10 leading-relaxed text-lg max-w-xl mx-auto font-medium">
-              This is a safe space. Share your legal hurdles or experiences anonymously. Your voice can guide and empower others facing similar challenges.
+              A Respectful and Protected Environment for sharing Legal experiences that may Guide and Support other.
             </p>
             <button onClick={() => setIsModalOpen(true)} className="bg-[#333333] border border-transparent text-[#F5F1E8] px-8 py-4 rounded-full flex items-center gap-3 mx-auto font-bold tracking-wider text-sm uppercase shadow-lg hover:shadow-[0_0_15px_rgba(198,167,106,0.5)] hover:-translate-y-0.5 transition-all">
               <FileText size={18} /> Write Your Story
@@ -713,7 +721,9 @@ const SubmitStorySection = () => {
                           className="mt-1 shrink-0 accent-[#B89A6A] w-5 h-5 cursor-pointer"
                         />
                         <label htmlFor="consent" className="text-sm text-[#785F3F] leading-relaxed cursor-pointer font-medium select-none">
-                          I consent to sharing this story anonymously. I understand that AI will remove identifiable information, but the core narrative will be visible to help others.
+                         I confirm this is a true personal experience.
+I allow RightVerse to publish this story publicly for awareness purposes.
+I consent to share this story anonymously.
                         </label>
                       </div>
 

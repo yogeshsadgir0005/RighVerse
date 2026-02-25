@@ -14,14 +14,6 @@ export default function YourVoice() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // Modal & Form State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [storyTitle, setStoryTitle] = useState("");
-  const [storyContent, setStoryContent] = useState("");
-  const [storyCategory, setStoryCategory] = useState("");
-  const [consentGiven, setConsentGiven] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  
   // Expanded Story Modal State
   const [expandedStory, setExpandedStory] = useState(null);
 
@@ -46,34 +38,6 @@ export default function YourVoice() {
       console.error("Error fetching stories:", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!consentGiven || !storyContent.trim()) return;
-    setSubmitting(true);
-    try {
-      await axios.post('/stories', {
-        title: storyTitle || "Untitled Experience",
-        content: storyContent,
-        category: storyCategory || "General",
-        location: "India",
-        consent: consentGiven
-      });
-      setIsModalOpen(false);
-      setStoryTitle("");
-      setStoryContent("");
-      setStoryCategory("");
-      setConsentGiven(false);
-      setToastMsg("Thank you for sharing your story. Your voice can help others.");
-      setTimeout(() => setToastMsg(null), 5000);
-      fetchStories(); 
-    } catch (err) {
-      console.error("Submission failed", err);
-      alert(err.response?.data?.message || "Failed to submit story.");
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -143,7 +107,7 @@ export default function YourVoice() {
         .micro-icon { transition: transform 200ms ease; }
         .story-card:hover .micro-icon { transform: scale(1.1); }
 
-        .action-btn { opacity: 0.6; transition: opacity 200ms ease; }
+        .action-btn { opacity: 0.6; transition: all 200ms ease; }
         .story-card:hover .action-btn { opacity: 1; }
         .action-btn.support svg { transition: fill 200ms ease; }
         .action-btn.support:hover svg { fill: currentColor; color: #8C2F2F; }
@@ -184,9 +148,6 @@ export default function YourVoice() {
            A safe, AI-protected space to share your legal experiences, find solidarity, and learn from the community.
          </p>
       </div>
-
-      {/* Hero Section (Soft Feature Panel) */}
-
 
       {/* Main Content Area */}
       <div className="flex-1 max-w-6xl mx-auto px-4 py-8 relative z-10 warm-glow-bg w-full">
@@ -249,9 +210,6 @@ export default function YourVoice() {
         )}
       </div>
 
-
-  
-
       {/* Expanded Story Modal */}
       {expandedStory && (
         <div className="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
@@ -289,6 +247,28 @@ export default function YourVoice() {
 
 function StoryCard({ data }) {
   const dateStr = new Date(data.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  
+  // Local state to handle likes instantly in the UI
+  const [supports, setSupports] = useState(data.supports || 0);
+  const [hasSupported, setHasSupported] = useState(false);
+
+  const handleSupport = async (e) => {
+    e.stopPropagation(); // Prevents the card from expanding when clicking the button
+    if (hasSupported) return; // Prevent multiple clicks in one session
+    
+    // Optimistically update UI
+    setSupports(prev => prev + 1);
+    setHasSupported(true);
+
+    try {
+      await axios.put(`/stories/${data._id}/support`);
+    } catch (err) {
+      console.error("Failed to support story:", err);
+      // Revert UI if the API call fails
+      setSupports(prev => prev - 1);
+      setHasSupported(false);
+    }
+  };
 
   return (
     <div className="story-card bg-[#FBF8F2] rounded-[20px] border border-[#D2C4AE] flex flex-col h-full cursor-pointer relative overflow-hidden">
@@ -324,8 +304,13 @@ function StoryCard({ data }) {
          )}
          
          <div className="flex items-center justify-between mt-5 pt-4 border-t border-[#D2C4AE]/50 text-[#785F3F]">
-            <button className="action-btn support flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide" onClick={(e) => e.stopPropagation()}>
-              <Heart size={16}/> Support
+            {/* Supported button now changes color and displays the count dynamically */}
+            <button 
+              className={`action-btn support flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide ${hasSupported ? 'text-[#8C2F2F] opacity-100' : ''}`} 
+              onClick={handleSupport}
+            >
+              <Heart size={16} className={hasSupported ? "fill-current" : ""} /> 
+              Support {supports > 0 ? `(${supports})` : ''}
             </button>
             <button className="action-btn share flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide" onClick={(e) => e.stopPropagation()}>
               <Share2 size={16}/> Share

@@ -194,7 +194,7 @@ export default function LawDetail() {
             {/* Metadata - all top-level fields */}
             <div className="bg-[#E9E3D9] rounded-[20px] border border-[#D2C4AE] shadow-sm p-7">
               <h3 className="text-[11px] font-bold text-[#B89A6A] uppercase tracking-widest mb-5">
-                Legal Metadata
+                Legal Ai Metadata
               </h3>
 
               <div className="space-y-5">
@@ -359,7 +359,7 @@ function CitizenView({ law }) {
 
   return (
     <>
-      <Section title="Simple Summary" index={0} isLawyer={false}>
+      <Section title="Ai Summary" index={0} isLawyer={false}>
         <p className="text-lg readability-hover p-2 -m-2 font-medium">{c.summary || "No summary available."}</p>
       </Section>
 

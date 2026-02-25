@@ -35,7 +35,7 @@ export default function Footer() {
             <ul className="space-y-4 text-[15px] font-medium text-[#D2C4AE]">
               <li><Link to="/" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-block">Home</Link></li>
               <li><Link to="/law-library" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-block">Law Library</Link></li>
-              <li><Link to="/news" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-flex items-center gap-2">Law of the Day <span className="text-[#B89A6A] text-lg">⭐</span></Link></li>
+              <li><Link to="/news" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-flex items-center gap-2">Law of the Day <span className="text-[#B89A6A] text-lg"></span></Link></li>
               <li><Link to="/blogs" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-block">Legal Awareness</Link></li>
               <li><Link to="/your-voice" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-block">Your Voice</Link></li>
               <li><Link to="/resources" className="hover:text-[#B89A6A] transition-all duration-300 hover:translate-x-2 inline-block">Help & Resources</Link></li>

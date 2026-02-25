@@ -92,3 +92,18 @@ exports.deleteStory = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+exports.supportStory = async (req, res) => {
+  try {
+    const story = await Story.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { supports: 1 } }, // MongoDB increment operator
+      { new: true }
+    );
+    if (!story) return res.status(404).json({ message: "Story not found" });
+    res.json(story);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

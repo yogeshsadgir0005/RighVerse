@@ -1,19 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios , {BASE_URL} from '../utils/axios';
-import { Save, User, Layout, Loader2, Upload } from 'lucide-react';
+import { Save, User, Loader2 } from 'lucide-react';
 
 export default function ManageHero() {
+  // Initialize with 4 empty lawyer objects
   const [settings, setSettings] = useState({ 
-  
-    lawyers: [ { name: '', title: '', quote: '', desc: '', image: '' }, { name: '', title: '', quote: '', desc: '', image: '' } ] 
+    lawyers: [
+      { name: '', title: '', quote: '', desc: '', image: '' },
+      { name: '', title: '', quote: '', desc: '', image: '' },
+      { name: '', title: '', quote: '', desc: '', image: '' },
+      { name: '', title: '', quote: '', desc: '', image: '' }
+    ] 
   });
-  const [files, setFiles] = useState({  lawyer0: null, lawyer1: null });
+
+  // State for 4 file inputs
+  const [files, setFiles] = useState({ 
+    lawyer0: null, 
+    lawyer1: null, 
+    lawyer2: null, 
+    lawyer3: null 
+  });
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     axios.get('/hero').then(res => {
-      if (res.data) setSettings(res.data);
+      // If data exists, merge it. If the DB only has 2, fill the rest with empty objects to avoid crashes.
+      if (res.data && res.data.lawyers) {
+        const mergedLawyers = [...res.data.lawyers];
+        while (mergedLawyers.length < 4) {
+            mergedLawyers.push({ name: '', title: '', quote: '', desc: '', image: '' });
+        }
+        setSettings({ ...res.data, lawyers: mergedLawyers });
+      }
       setLoading(false);
     });
   }, []);
@@ -22,13 +42,13 @@ export default function ManageHero() {
     setSaving(true);
     const formData = new FormData();
     
-    // Append Files
-  
+    // Append Files for all 4 lawyers
     if (files.lawyer0) formData.append('lawyer0', files.lawyer0);
     if (files.lawyer1) formData.append('lawyer1', files.lawyer1);
+    if (files.lawyer2) formData.append('lawyer2', files.lawyer2);
+    if (files.lawyer3) formData.append('lawyer3', files.lawyer3);
 
-    // Append other data as strings
-  
+    // Append text data
     formData.append('lawyers', JSON.stringify(settings.lawyers));
 
     try {
@@ -36,8 +56,11 @@ export default function ManageHero() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert("Updated Successfully!");
-      window.location.reload(); // Refresh to show new images
-    } catch (err) { alert("Error saving data"); }
+      window.location.reload(); 
+    } catch (err) { 
+      console.error(err);
+      alert("Error saving data"); 
+    }
     setSaving(false);
   };
 
@@ -50,7 +73,7 @@ export default function ManageHero() {
   if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin" /></div>;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto font-sans text-stone-900">
+    <div className="p-8 max-w-6xl mx-auto font-sans text-stone-900">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-serif font-bold text-stone-900">Hero Section Management</h1>
         <button onClick={handleSave} disabled={saving} className="bg-stone-900 text-white px-6 py-2 rounded-lg font-bold flex items-center gap-2 hover:bg-black transition shadow-md">
@@ -58,16 +81,21 @@ export default function ManageHero() {
         </button>
       </div>
 
-
-      {/* --- LAWYERS UPLOAD --- */}
+      {/* --- LAWYERS UPLOAD GRID (2x2) --- */}
       <div className="grid md:grid-cols-2 gap-8">
         {settings.lawyers.map((lawyer, i) => (
           <div key={i} className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
-            <h3 className="font-bold border-b pb-2 mb-4 text-stone-600 flex items-center gap-2"><User size={18}/> Lawyer {i+1}</h3>
+            <h3 className="font-bold border-b pb-2 mb-4 text-stone-600 flex items-center gap-2">
+                <User size={18}/> Lawyer {i+1}
+            </h3>
             
             <div className="flex gap-4 mb-4 items-center">
                <div className="w-16 h-16 rounded-full border overflow-hidden bg-stone-50 shrink-0">
-                  <img src={`${BASE_URL}${lawyer.image}`} alt="Lawyer" className="w-full h-full object-cover" />
+                  <img 
+                    src={lawyer.image ? `${BASE_URL}${lawyer.image}` : "https://placehold.co/100"} 
+                    alt="Lawyer" 
+                    className="w-full h-full object-cover" 
+                  />
                </div>
                <label className="flex-1 border border-stone-200 rounded p-2 text-center cursor-pointer hover:bg-stone-50 transition">
                   <span className="text-[10px] font-bold text-stone-400 uppercase tracking-tighter">Change Photo</span>

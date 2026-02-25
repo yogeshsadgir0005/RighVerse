@@ -17,7 +17,9 @@ router.get('/', getHeroSettings);
 router.put('/', upload.fields([
   { name: 'bgImage', maxCount: 1 },
   { name: 'lawyer0', maxCount: 1 },
-  { name: 'lawyer1', maxCount: 1 }
+  { name: 'lawyer1', maxCount: 1 },
+   { name: 'lawyer2', maxCount: 1 },
+    { name: 'lawyer3', maxCount: 1 }
 ]), updateHeroSettings);
 
 module.exports = router;

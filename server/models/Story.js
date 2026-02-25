@@ -9,6 +9,7 @@ const storySchema = new mongoose.Schema({
   location: { type: String, default: "India" },
   isAnonymous: { type: Boolean, default: true },
   consentGiven: { type: Boolean, required: true, default: false }, // Track that they agreed to the AI terms
+  supports: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
 

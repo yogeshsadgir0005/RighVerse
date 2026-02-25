@@ -101,32 +101,61 @@ export default function Header() {
 
       <header className="fixed top-0 left-0 w-full z-50 bg-[#F5F1E8] shadow-[0_2px_10px_rgba(120,95,63,0.05)] font-sans transition-all duration-300">
         
-        <div className="flex justify-between items-center w-full px-4 md:px-8 h-[72px]">
+
+
+
+
+        <div className="flex justify-between items-center w-full px-4 md:px-8 h-[115px]">
           
           <Link to="/" className="animate-logo flex items-center gap-3 shrink-0">
                  
-    <img src={rightverseLogo} className='h-14 w-14' alt="RightVerse Logo" />
+    <img src={rightverseLogo} className='h-24 w-24' alt="RightVerse Logo" />
 
-            <h1 className="text-2xl font-serif font-bold text-[#785F3F] tracking-wide leading-none mt-1">
-              RIGHT<br/>VERSE
+            <h1 className="text-3xl font-serif font-bold text-[#785F3F] tracking-wide leading-none mt-1">
+              RIGHTVERSE
             </h1>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
+          <nav className=" flex flex-col hidden md:flex items-center gap-4 ">
+
+            <div className='md:flex gap-8 pt-8 items-center justify-center'>
+     {navItems.map((item) => (
               <Link 
                 key={item.name} 
                 to={item.link} 
-                className={`premium-nav-link text-xs font-bold uppercase tracking-wider ${isActive(item.link) ? 'active' : ''}`}
+                className={`premium-nav-link text-sm font-bold uppercase  tracking-wider ${isActive(item.link) ? 'active' : ''}`}
               >
                 {item.name}
               </Link>
+
             ))}
+            </div>
+       
+
+
+                 <div className="hidden md:block w-full border-t border-[#D2C4AE]/30 py-2.5 text-center bg-[#F5F1E8]">
+          <p 
+            className="animate-tagline uppercase font-bold text-[#9e855c]"
+            style={{ 
+              fontFamily: "'EB Garamond', serif", 
+              letterSpacing: "3px", 
+              fontSize: "18px" 
+            }}
+          >
+            Justice, Liberty, Equality and Fraternity for all citizens.
+          </p>
+        </div>
+        
+
           </nav>
+
+
+
+
 
           <div className="flex items-center gap-4 shrink-0">
             
-            <div className="hidden md:flex animate-right-pic w-12 h-12 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
+            <div className="hidden md:flex animate-right-pic w-24 h-24 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
                <img 
                   src={stambhlogo} 
                   alt="Ashoka Emblem" 
@@ -145,18 +174,15 @@ export default function Header() {
 
         </div>
 
-        <div className="hidden md:block w-full border-t border-[#D2C4AE]/30 py-2.5 text-center bg-[#F5F1E8]">
-          <p 
-            className="animate-tagline uppercase font-bold text-[#9e855c]"
-            style={{ 
-              fontFamily: "'EB Garamond', serif", 
-              letterSpacing: "3px", 
-              fontSize: "18px" 
-            }}
-          >
-            Justice, Liberty, Equality and Fraternity for all citizens.
-          </p>
-        </div>
+
+
+
+       
+
+
+
+
+
 
         {isMobileMenuOpen && (
           <nav className="md:hidden absolute top-full left-0 w-full h-screen bg-[#F5F1E8] border-t border-[#D2C4AE]/30 shadow-xl animate-in slide-in-from-right-10 z-40 watermark-drawer relative overflow-hidden">

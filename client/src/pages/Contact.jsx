@@ -93,7 +93,7 @@ export default function Contact() {
 
       {/* --- SECTION 1: CONTACT CARDS --- */}
       <div className="container mx-auto max-w-6xl mb-20 relative z-10 watermark-bg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           <div className="contact-card bg-[#E9E3D9] p-10 rounded-[24px] border border-[#D2C4AE] flex flex-col items-center text-center cursor-pointer">
             <div className="icon-wrapper w-16 h-16 bg-[#F5F1E8] rounded-full border border-[#D2C4AE] flex items-center justify-center text-[#B89AAA] mb-6">
@@ -101,8 +101,8 @@ export default function Contact() {
             </div>
             <h3 className="font-serif font-bold text-2xl mb-2 text-[#785F3F]">Email Us</h3>
             <p className="text-[#D2C4AE] text-sm mb-5 font-bold uppercase tracking-widest">For general inquiries & support</p>
-            <a href="mailto:support@rightverse.in" className="text-[#B89A6A] font-bold hover:text-[#785F3F] transition-colors text-lg">
-              support@rightverse.in
+            <a href="mailto:amatul27safura@gmail.com" className="text-[#B89A6A] font-bold hover:text-[#785F3F] transition-colors text-lg">
+           amatul27safura@gmail.com
             </a>
           </div>
 
@@ -112,21 +112,12 @@ export default function Contact() {
             </div>
             <h3 className="font-serif font-bold text-2xl mb-2 text-[#785F3F]">Call Us</h3>
             <p className="text-[#D2C4AE] text-sm mb-5 font-bold uppercase tracking-widest">Mon-Fri, 9am - 6pm</p>
-            <a href="tel:+919876543210" className="text-[#B89A6A] font-bold hover:text-[#785F3F] transition-colors text-lg">
-              +91 98765 43210
+            <a href="tel:+919371192765" className="text-[#B89A6A] font-bold hover:text-[#785F3F] transition-colors text-lg">
+            +91 9371192765
             </a>
           </div>
 
-          <div className="contact-card bg-[#E9E3D9] p-10 rounded-[24px] border border-[#D2C4AE] flex flex-col items-center text-center cursor-pointer">
-            <div className="icon-wrapper w-16 h-16 bg-[#F5F1E8] rounded-full border border-[#D2C4AE] flex items-center justify-center text-[#B89AAA] mb-6">
-              <MapPin size={28} />
-            </div>
-            <h3 className="font-serif font-bold text-2xl mb-2 text-[#785F3F]">Visit Us</h3>
-            <p className="text-[#D2C4AE] text-sm mb-5 font-bold uppercase tracking-widest">Head Office</p>
-            <p className="text-[#B89A6A] font-bold px-4 leading-relaxed">
-              401, Legal Towers, Civil Lines<br/> Pune - 410001
-            </p>
-          </div>
+        
 
         </div>
       </div>

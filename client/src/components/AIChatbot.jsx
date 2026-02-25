@@ -125,7 +125,7 @@ useEffect(() => {
           className="bg-stone-900 text-white p-4 rounded-full shadow-xl hover:bg-black hover:scale-110 transition-all flex items-center gap-2"
         >
           <MessageSquare size={24} />
-          <span className="font-bold pr-2"> Sahayak Ai </span>
+          <span className="font-bold pr-2"> Right Mate </span>
         </button>
       )}
 
