@@ -22,6 +22,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import AIChatbot from './components/AIChatbot'; // <--- 1. Import the Chatbot here
 import ScrollToTop from './components/ScrollToTop';
+import Policies from './pages/Policies';
 export default function App() {
   return (
     <BrowserRouter>
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:id" element={<ArticleDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/policies" element={<Policies />} />
           </Routes>
         </main>
         

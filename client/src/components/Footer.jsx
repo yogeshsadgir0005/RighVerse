@@ -46,11 +46,11 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Policies</h4>
             <ul className="space-y-4 text-[15px] font-medium text-[#D2C4AE]">
-              <li><Link to="#" className="hover:text-white transition-all duration-300 hover:translate-x-2 inline-block">Privacy Policy</Link></li>
-              <li><Link to="#" className="hover:text-white transition-all duration-300 hover:translate-x-2 inline-block">Safety Policy</Link></li>
-              <li><Link to="#" className="hover:text-white transition-all duration-300 hover:translate-x-2 inline-block">Terms & Conditions</Link></li>
-              <li><Link to="#" className="hover:text-white transition-all duration-300 hover:translate-x-2 inline-block">Disclaimer</Link></li>
-              <li><Link to="#" className="hover:text-white transition-all duration-300 hover:translate-x-2 inline-block">Accessibility Statement</Link></li>
+<Link to="/policies?tab=privacy" className="hover:text-[#B89A6A] transition-colors block mb-2">Privacy Policy</Link>
+<Link to="/policies?tab=safety" className="hover:text-[#B89A6A] transition-colors block mb-2">Safety Policy</Link>
+<Link to="/policies?tab=terms" className="hover:text-[#B89A6A] transition-colors block mb-2">Terms & Conditions</Link>
+<Link to="/policies?tab=disclaimer" className="hover:text-[#B89A6A] transition-colors block mb-2">Disclaimer</Link>
+<Link to="/policies?tab=accessibility" className="hover:text-[#B89A6A] transition-colors block mb-2">Accessibility Statement</Link>
             </ul>
           </div>
 
