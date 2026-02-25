@@ -125,7 +125,7 @@ useEffect(() => {
           className="bg-stone-900 text-white p-4 rounded-full shadow-xl hover:bg-black hover:scale-110 transition-all flex items-center gap-2"
         >
           <MessageSquare size={24} />
-          <span className="font-bold pr-2"> Rightmate </span>
+          <span className="font-bold pr-2"> Rightsmate AI</span>
         </button>
       )}
 
@@ -137,7 +137,7 @@ useEffect(() => {
           <div className="bg-stone-900 p-4 flex justify-between items-center text-white">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <h3 className="font-serif font-bold">Rightmate</h3>
+              <h3 className="font-serif font-bold">Rightsmate AI</h3>
             </div>
             <button onClick={() => setIsOpen(false)} className="hover:text-stone-300"><X size={20} /></button>
           </div>

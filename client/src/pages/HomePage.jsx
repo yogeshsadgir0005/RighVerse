@@ -661,7 +661,7 @@ const SubmitStorySection = () => {
 
             <h2 className="text-4xl md:text-5xl font-serif mb-4 text-[#785F3F] font-bold">Submit Your Story</h2>
             <p className="text-[#785F3F]/80 mb-10 leading-relaxed text-lg max-w-xl mx-auto font-medium">
-              A Respectful and Protected Environment for sharing Legal experiences that may Guide and Support other.
+              A Respectful and Protected Environment for sharing Legal experiences that may Guide and Support others.
             </p>
             <button onClick={() => setIsModalOpen(true)} className="bg-[#333333] border border-transparent text-[#F5F1E8] px-8 py-4 rounded-full flex items-center gap-3 mx-auto font-bold tracking-wider text-sm uppercase shadow-lg hover:shadow-[0_0_15px_rgba(198,167,106,0.5)] hover:-translate-y-0.5 transition-all">
               <FileText size={18} /> Write Your Story
