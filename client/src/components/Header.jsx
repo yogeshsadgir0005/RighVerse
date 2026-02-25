@@ -156,7 +156,7 @@ export default function Header() {
 
           <div className="flex items-center gap-4 shrink-0">
             
-            <div className="hidden md:flex animate-right-pic w-24 h-24 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
+            <div className="hidden md:flex animate-right-pic w-20 h-20 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
                <img 
                   src={stambhlogo} 
                   alt="Ashoka Emblem" 
