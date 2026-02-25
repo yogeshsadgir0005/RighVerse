@@ -114,7 +114,8 @@ export default function Header() {
             <h1 className="text-3xl font-serif font-bold text-[#785F3F] tracking-wide leading-none mt-1">
               RIGHTVERSE
             </h1>
-          </Link>
+          </Link
+          >
 
           <nav className=" flex flex-col hidden md:flex items-center gap-4 ">
 
