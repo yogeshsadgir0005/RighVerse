@@ -649,7 +649,7 @@ const SubmitStorySection = () => {
         <div className="w-full max-w-4xl bg-[#E9E3D9] rounded-[48px] p-12 md:p-16 relative overflow-hidden shadow-4xl border border-[#b09f81] text-center">
           <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E")`}}></div>
           <div className="relative z-10 flex flex-col items-center">
-       <div className="hidden md:flex animate-right-pic mb-6 w-24 h-24 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
+       <div className="hidden md:flex animate-right-pic mb-6 w-38 h-38 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
                    <img 
                       src={stambhlogo} 
                       alt="Ashoka Emblem" 
