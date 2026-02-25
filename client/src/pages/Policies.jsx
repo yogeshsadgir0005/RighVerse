@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, Shield, FileText, AlertTriangle, ScrollText, Accessibility, ArrowRight } from 'lucide-react';
+import { ChevronDown, Shield, FileText, AlertTriangle, ScrollText, Accessibility, ArrowRight, HelpCircle } from 'lucide-react';
 
 const policiesData = {
   privacy: {
