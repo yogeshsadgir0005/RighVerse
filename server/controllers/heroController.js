@@ -7,6 +7,7 @@ exports.getHeroSettings = async (req, res) => {
       settings = await HeroSettings.create({
      
         lawyers: [{ name: "Lawyer 1", image: "/uploads/l1.jpg" }, { name: "Lawyer 2", image: "/uploads/l2.jpg" }]
+      
       });
     }
     res.json(settings);

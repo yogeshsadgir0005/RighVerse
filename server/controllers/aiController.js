@@ -62,7 +62,6 @@ let generationPromise = null;
 
 // --- HELPER: The Core Logic to Fetch & Save ---
 const generateAndSaveDailyLaw = async () => {
-  // If a generation is already in progress, wait for it instead of starting a new one
   if (generationPromise) {
     console.log("⏳ Generation already in progress. Waiting for it to finish to prevent duplicate API calls...");
     return await generationPromise;
@@ -72,20 +71,36 @@ const generateAndSaveDailyLaw = async () => {
     try {
       const todayStr = new Date().toISOString().split('T')[0]; 
       
-      // Double check if it was created just before this lock was engaged
       const existing = await DailyLaw.findOne({ fetchDateString: todayStr });
       if (existing) return existing;
 
       console.log("⏳ Starting Daily Law Cron Job...");
       
+      // 🛑 FIX 1: Fetch recent laws from the database to check for duplicates
+      const pastLaws = await DailyLaw.find().sort({ date: -1 }).limit(10);
+      const usedLinks = pastLaws.map(law => law.sourceLink);
+
       // 1. Fetch RSS Feeds
       let allNewsItems = [];
       for (const source of NEWS_SOURCES) {
         try {
           const feed = await parser.parseURL(source);
-          // Take top 5 from each to give AI more options to find a "teachable" case
-          allNewsItems.push(...feed.items.slice(0, 5)); 
+          
+          // 🛑 FIX 2: Filter out any items whose link is already in our DB
+          const freshItems = feed.items.filter(item => !usedLinks.includes(item.link));
+          
+          // Take top 5 *fresh* items from each feed
+          allNewsItems.push(...freshItems.slice(0, 5)); 
         } catch (err) { console.error(`Feed Error: ${err.message}`); }
+      }
+
+      // Fallback: If absolutely no fresh news is found, grab top unfiltered news to avoid crashing
+      if (allNewsItems.length === 0) {
+        console.log("⚠️ No fresh news found. Falling back to default feeds.");
+        for (const source of NEWS_SOURCES) {
+           const feed = await parser.parseURL(source);
+           allNewsItems.push(...feed.items.slice(0, 2));
+        }
       }
 
       // Prepare list for AI
@@ -95,24 +110,24 @@ const generateAndSaveDailyLaw = async () => {
       const prompt = `
         You are a Legal Expert for an educational app. Your goal is to teach citizens about Indian Laws using real-world news.
         
-        Here are the latest news headlines from India:
+        Here are the latest fresh news headlines from India:
         ${headlinesText}
 
         INSTRUCTIONS:
         1. **Select**: Pick the ONE story that best illustrates a specific crime, a court verdict, or a violation of rights. 
-           - PRIORITIZE: Court judgments, Police FIRs, Consumer Rights issues, or Crimes (Murder, Fraud, Negligence).
-           - IGNORE: Cricket/Sports (unless court-related), Celebrity gossip, or Political party statements.
+           - PRIORITIZE: Court judgments, Police FIRs, Consumer Rights issues, or Crimes.
+           - IGNORE: Stories you have selected in previous days. Only pick fresh legal matters.
         
         2. **Analyze**:
-           - Identify the specific **Indian Laws, IPC Sections, or Acts** that apply to this case (even if the headline doesn't explicitly name them, YOU must infer them based on the crime).
+           - Identify the specific **Indian Laws, IPC Sections, or Acts** that apply.
            - Identify the **Mistake/Violation**: Who broke the law and how?
 
         3. **Format Output (JSON)**:
-           - "title": A catchy Legal Title (e.g., "Criminal Negligence in Noida Techie Death" instead of just "Techie Dies").
-           - "highlights": The specific laws involved (e.g., "Section 304A IPC (Negligence), Section 34 IPC").
+           - "title": A catchy Legal Title (e.g., "Criminal Negligence in Noida Techie Death").
+           - "highlights": The specific laws involved.
            - "summary": A brief description of the incident focusing on the facts.
-           - "whyItMatters": Explain the legal lesson. Mention what mistake was made and what the law says about it. (e.g., "The builders failed to provide safety barriers, attracting criminal liability under negligence laws. Citizens have a right to safe public infrastructure.")
-           - "sourceLink": The link from the list.
+           - "whyItMatters": Explain the legal lesson. What mistake was made and what the law says about it.
+           - "sourceLink": The link from the list EXACTLY as provided.
 
         Return ONLY valid JSON.
       `;
@@ -120,12 +135,12 @@ const generateAndSaveDailyLaw = async () => {
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.4, // Lower temperature to be more factual/analytical
+        temperature: 0.4, 
       });
 
       const aiData = JSON.parse(completion.choices[0].message.content.replace(/```json|```/g, '').trim());
 
-      // --- NEW: GENERATE IMAGE WITH DALL-E AND SAVE LOCALLY ---
+      // --- GENERATE IMAGE WITH DALL-E AND SAVE LOCALLY ---
       try {
         console.log("🎨 Generating contextual image for:", aiData.title);
         const imageResponse = await openai.images.generate({
@@ -138,13 +153,11 @@ const generateAndSaveDailyLaw = async () => {
         const tempUrl = imageResponse.data[0].url;
         const localUrl = await downloadAndSaveImage(tempUrl, 'dailylaw');
         
-        // Attach the generated local URL (or fallback) to our data object
         aiData.imageUrl = localUrl || tempUrl;
         console.log("✅ Image generated and saved successfully.");
       } catch (imgErr) {
         console.error("⚠️ Image generation failed, it will use the fallback:", imgErr.message);
       }
-      // ---------------------------------------
 
       // 3. Save to DB
       const newLaw = await DailyLaw.findOneAndUpdate(
@@ -155,7 +168,7 @@ const generateAndSaveDailyLaw = async () => {
 
       console.log("✅ Daily Law Updated:", newLaw.title);
 
-      // 4. Cleanup
+      // 4. Cleanup old entries
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       await DailyLaw.deleteMany({ date: { $lt: sevenDaysAgo } });
@@ -165,12 +178,11 @@ const generateAndSaveDailyLaw = async () => {
       console.error("❌ Cron Job Failed:", error);
       return null;
     }
-  })(); // Execute the async IIFE and store the promise
+  })();
 
   try {
     return await generationPromise;
   } finally {
-    // Release the lock once generation is complete
     generationPromise = null;
   }
 };
