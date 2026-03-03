@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios, { BASE_URL } from '../utils/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import HeroBG from "../assets/heroBG.png";
-import stambhlogo from "../assets/image.png"
+import stambhlogo from "../assets/image.png";
+import Voice from "../assets/Voice.jpeg";
 import { 
   X, Shield, Scale, FileText, User, Lock, 
   Phone, BookOpen, Globe, Briefcase as BriefcaseIcon, 
@@ -651,7 +652,7 @@ const SubmitStorySection = () => {
           <div className="relative z-10 flex flex-col items-center">
        <div className="hidden md:flex animate-right-pic mb-6 w-38 h-38 rounded-full bg-[#E9E3D9] border-2 border-[#B89A6A] shadow-sm items-center justify-center overflow-hidden">
                    <img 
-                      src={stambhlogo} 
+                      src={Voice} 
                       alt="Ashoka Emblem" 
                       className="w-full h-full object-cover" 
                       onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x100/E9E3D9/B89A6A?text=Emblem" }} 
