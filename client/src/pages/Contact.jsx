@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../utils/axios'; // 👇 Updated to use your custom axios setup
+import api from '../utils/axios'; 
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -28,13 +28,11 @@ export default function Contact() {
     try {
       console.log("Frontend: Sending POST request to backend...");
       
-      // 👇 Updated to use the api instance instead of hardcoded localhost
       const response = await api.post('/contact', formData);
       
       console.log("Frontend: Server response received successfully:", response.data);
       toast.success('Message sent successfully! We will get back to you soon.');
       
-      // Reset form
       setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
       
     } catch (error) {

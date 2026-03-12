@@ -71,7 +71,7 @@ const [actionGuides, setActionGuides] = useState([])
         const newsRes = await axios.get('/news').catch(() => ({ data: [] }));
         const aiNewsRes = await axios.get('/ai/weekly-updates').catch(() => ({ data: [] }));
         const blogsRes = await axios.get('/blogs').catch(() => ({ data: [] }));
-const guidesRes = await axios.get('/action-guides').catch(() => ({ data: [] })); // NEW FETCH
+const guidesRes = await axios.get('/action-guides').catch(() => ({ data: [] }));
 
         const standardNews = Array.isArray(newsRes.data) ? newsRes.data : (newsRes.data?.items || []);
         const aiNews = Array.isArray(aiNewsRes.data) ? aiNewsRes.data : (aiNewsRes.data?.items || []);
@@ -320,7 +320,6 @@ const LawyerExplained = () => {
       .catch(err => console.error("Error fetching hero settings", err));
   }, []);
 
-  // --- Infinite Loop Handlers ---
   const nextLawyer = () => {
     setCurrent((prev) => (prev + 1) % heroData.lawyers.length);
   };
@@ -416,7 +415,6 @@ const LawOfTheDay = () => {
      whyItMatters: "System maintenance.", highlights: "N/A"
   };
 
-  // 6. Continuous Rotating Mirror Flip
   const handleFlip = () => setFlipDegree(prev => prev + 180);
 
   return (
@@ -498,10 +496,9 @@ const CitizenLibrary = () => (
 const KnowWhatToDo = ({ guides = [] }) => {
   const [selectedGuide, setSelectedGuide] = useState(null);
 
-  // Global Chatbot Trigger (Does not navigate to /chatbot)
   const triggerChatbot = (e) => {
     e.preventDefault();
-    setSelectedGuide(null); // Close modal if open
+    setSelectedGuide(null);
     window.dispatchEvent(new CustomEvent('open-global-chatbot'));
   };
 
@@ -620,13 +617,12 @@ const SubmitStorySection = () => {
     if (!analysisResult) return;
     setPosting(true);
     try {
-      // Syncing payload specifically with the expected fields of backend storyController.js
-      await axios.post('/stories', {
+        await axios.post('/stories', {
         title: analysisResult.redactedTitle || formData.title, 
-        content: formData.story, // Required by backend validator
+        content: formData.story, 
         category: formData.category,
         location: formData.location || "India",
-        consent: consentGiven // Required by backend validator
+        consent: consentGiven 
       });
       
       setIsModalOpen(false);
@@ -634,7 +630,6 @@ const SubmitStorySection = () => {
       setConsentGiven(false);
       setAnalysisResult(null);
       
-      // Pass success message to YourVoice route
       navigate('/your-voice', { state: { message: "Thank you for sharing your story. Your voice can help others." } });
     } catch (err) {
       console.error("Post failed", err);

@@ -14,15 +14,13 @@ export default function AIChatbot() {
 
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Inside your AIChatbot.jsx component
 useEffect(() => {
   const handleOpenChatbot = () => {
-    setIsOpen(true); // Assuming `isOpen` is your state that controls the chatbot window visibility
+    setIsOpen(true);
   };
 
   window.addEventListener('open-global-chatbot', handleOpenChatbot);
@@ -33,7 +31,6 @@ useEffect(() => {
 }, []);
 
 
-  // --- 1. SPEECH TO TEXT (STT) ---
   const startListening = () => {
     if (!('webkitSpeechRecognition' in window)) {
       alert("Voice input is not supported in this browser. Please use Google Chrome.");
@@ -41,7 +38,7 @@ useEffect(() => {
     }
 
     const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = 'en-IN'; // Default to Indian English (it detects Hindi/Marathi mixed well)
+    recognition.lang = 'en-IN';
     recognition.continuous = false;
     recognition.interimResults = false;
 
@@ -50,7 +47,7 @@ useEffect(() => {
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setInputText(transcript);
-      handleSend(transcript); // Auto-send after speaking
+      handleSend(transcript); 
     };
 
     recognition.onerror = (event) => {
@@ -63,14 +60,11 @@ useEffect(() => {
     recognition.start();
   };
 
-  // --- 2. TEXT TO SPEECH (TTS) ---
   const speakText = (text) => {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel(); // Stop previous
+      window.speechSynthesis.cancel(); 
       const utterance = new SpeechSynthesisUtterance(text);
       
-      // Try to match voice to detected language loosely (optional refinement)
-      // utterance.lang = 'hi-IN'; 
       
       utterance.onstart = () => setIsSpeaking(true);
       utterance.onend = () => setIsSpeaking(false);
@@ -84,27 +78,22 @@ useEffect(() => {
     setIsSpeaking(false);
   };
 
-  // --- 3. SEND MESSAGE ---
   const handleSend = async (textOverride) => {
     const text = textOverride || inputText;
     if (!text.trim()) return;
 
-    // Add User Message
     const userMsg = { text, sender: "user" };
     setMessages((prev) => [...prev, userMsg]);
     setInputText("");
     setIsLoading(true);
 
     try {
-      // Call Backend
       const res = await axios.post('/ai/chat', { message: text });
       const botReply = res.data.reply;
 
-      // Add Bot Message
       const botMsg = { text: botReply, sender: "bot" };
       setMessages((prev) => [...prev, botMsg]);
       
-      // Auto-speak the response for accessibility
       speakText(botReply);
 
     } catch (error) {
@@ -118,7 +107,6 @@ useEffect(() => {
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
       
-      {/* TOGGLE BUTTON */}
       {!isOpen && (
         <button 
           onClick={() => setIsOpen(true)}
@@ -129,11 +117,9 @@ useEffect(() => {
         </button>
       )}
 
-      {/* CHAT WINDOW */}
       {isOpen && (
         <div className="bg-white w-[350px] h-[500px] rounded-2xl shadow-2xl border border-stone-300 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
           
-          {/* HEADER */}
           <div className="bg-stone-900 p-4 flex justify-between items-center text-white">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -142,7 +128,6 @@ useEffect(() => {
             <button onClick={() => setIsOpen(false)} className="hover:text-stone-300"><X size={20} /></button>
           </div>
 
-          {/* MESSAGES AREA */}
           <div className="flex-1 p-4 overflow-y-auto bg-stone-50 space-y-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
@@ -168,7 +153,6 @@ useEffect(() => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* CONTROLS (TTS STATUS) */}
           {isSpeaking && (
             <div className="bg-yellow-50 px-4 py-1 flex justify-between items-center text-xs text-yellow-700 border-t border-yellow-100">
               <span className="flex items-center gap-2"><Volume2 size={12} className="animate-pulse"/> Speaking...</span>
@@ -176,11 +160,9 @@ useEffect(() => {
             </div>
           )}
 
-          {/* INPUT AREA */}
           <div className="p-3 bg-white border-t border-stone-200">
             <div className="flex items-center gap-2 bg-stone-100 rounded-full px-2 py-1 border border-stone-200">
               
-              {/* MIC BUTTON */}
               <button 
                 onClick={startListening}
                 className={`p-2 rounded-full transition-colors ${
@@ -201,7 +183,6 @@ useEffect(() => {
                 disabled={isListening}
               />
 
-              {/* SEND BUTTON */}
               <button 
                 onClick={() => handleSend()}
                 className="p-2 bg-stone-900 text-white rounded-full hover:bg-black transition-transform active:scale-95"

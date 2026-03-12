@@ -10,15 +10,12 @@ export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-[#D2C4AE] pt-20 pb-8 border-t-[3px] border-[#B89A6A] mt-auto font-sans relative z-20 overflow-hidden">
       
-      {/* Subtle background texture for the footer */}
       <div className="absolute inset-0 bg-[url('/india-map-watermark.png')] opacity-[0.02] pointer-events-none bg-center bg-cover"></div>
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         
-        {/* Increased spacing between columns (gap-12 -> gap-16) for better visual hierarchy */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
           
-          {/* 1. Strong Legal Identity Section */}
           <div className="lg:col-span-4">
             <h2 className="text-white font-serif text-4xl md:text-5xl mb-6 font-bold tracking-wider drop-shadow-sm">RightVerse</h2>
             <p className="text-[16px] leading-relaxed mb-6 text-[#E9E3D9] font-medium">
@@ -29,7 +26,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* 2 & 3. Navigation with "Law of the Day" & "Legal Awareness" */}
           <div className="lg:col-span-3 lg:pl-8">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Navigation</h4>
             <ul className="space-y-4 text-[15px] font-medium text-[#D2C4AE]">
@@ -42,7 +38,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 4. Improved Policies Section */}
           <div className="lg:col-span-2">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Policies</h4>
             <ul className="space-y-4 text-[15px] font-medium text-[#D2C4AE]">
@@ -54,7 +49,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* 5. Improved Connect Section (Professional icons & hovers) */}
           <div className="lg:col-span-3">
             <h4 className="text-white font-bold mb-6 text-sm uppercase tracking-widest">Connect</h4>
             <ul className="space-y-5 text-[15px] mb-8 font-medium text-[#D2C4AE]">
@@ -79,7 +73,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* 6. Bottom Legal Strip */}
         <div className="border-t border-[#333333] pt-8 flex flex-col lg:flex-row justify-between items-center text-[13px] text-[#D2C4AE]/70 font-medium gap-6">
            <p className="text-center lg:text-left">© 2026 RightVerse | Developed as a Capstone Project | All Rights Reserved</p>
            <p className="text-center lg:text-left">This platform provides informational content only and does not constitute legal advice.</p>

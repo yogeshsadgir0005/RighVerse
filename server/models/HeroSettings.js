@@ -6,7 +6,7 @@ const heroSettingsSchema = new mongoose.Schema({
     title: String,
     quote: String,
     desc: String,
-    image: String // This stores the individual lawyer photo URL
+    image: String 
   }]
 }, { timestamps: true });
 

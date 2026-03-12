@@ -2,7 +2,6 @@ import axios  from '../utils/axios';
 
 
 
-// --- PUBLIC ---
 export const fetchLaws = async (params) => {
   const res = await axios.get('/laws', { params });
   return res.data;
@@ -12,14 +11,10 @@ export const suggestLaws = async (q) => {
   const res = await axios.get(`/laws/suggest`, { params: { q } });
   return res.data;
 };
-
-// VITAL: This export must exist for LawDetail to work
 export const fetchLawBySlug = async (idOrSlug) => {
   const res = await axios.get(`/laws/${idOrSlug}`);
   return res.data;
 };
-
-// --- ADMIN ---
 const getAuthHeaders = (token) => ({
   headers: { Authorization: `Bearer ${token}` }
 });

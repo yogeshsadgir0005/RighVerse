@@ -20,7 +20,6 @@ const cleanStringArray = (value) =>
   toArray(value)
     .flatMap((v) => {
       if (Array.isArray(v)) return v;
-      // accept comma/newline separated strings from admin UI
       if (typeof v === 'string' && (v.includes(',') || v.includes('\n'))) {
         return v.split(/\n|,/g);
       }
@@ -76,14 +75,12 @@ const normalizeAmendments = (amendments) =>
     .map((a) => {
       if (!a) return null;
 
-      // Old style: "string"
       if (typeof a === 'string') {
         const summary = cleanString(a);
         if (!summary) return null;
         return { summary };
       }
 
-      // Mixed frontend/admin shapes
       const summary = cleanString(a.summary ?? a.type ?? a.note);
       const type = cleanString(a.type);
       const note = cleanString(a.note);
@@ -119,7 +116,6 @@ const normalizeResources = (resources) =>
 function normalizeLawPayload(body = {}, { partial = false } = {}) {
   const out = { ...body };
 
-  // top-level strings/numbers
   const topStringFields = ['title', 'slug', 'statuteName', 'category', 'lawType', 'courtLevel', 'jurisdiction', 'practiceArea'];
   for (const key of topStringFields) {
     if (key in out) out[key] = cleanString(out[key]);
@@ -177,7 +173,6 @@ function normalizeLawPayload(body = {}, { partial = false } = {}) {
 
   if ('resources' in out) out.resources = normalizeResources(out.resources);
 
-  // Remove undefined fields (important for updates)
   const prune = (obj) => {
     if (Array.isArray(obj)) return obj.map(prune).filter((v) => v !== undefined);
     if (obj && typeof obj === 'object') {
@@ -198,7 +193,6 @@ function serializeLaw(doc) {
   const law = doc?.toObject ? doc.toObject() : doc;
   if (!law) return law;
 
-  // Ensure backward/front-end compatibility shapes while preserving canonical fields
   if (law.citizen?.faqs) {
     law.citizen.faqs = law.citizen.faqs.map((f) => ({
       ...f,
@@ -210,7 +204,6 @@ function serializeLaw(doc) {
   if (law.lawyer?.judgments) {
     law.lawyer.judgments = law.lawyer.judgments.map((j) => ({
       ...j,
-      // compatibility aliases for older UI
       title: j.title ?? j.caseName ?? '',
       summary: j.summary ?? j.holding ?? '',
     }));
@@ -237,9 +230,6 @@ async function findLawBySlugOrId(identifier, { publicOnly = true } = {}) {
   }
   return Law.findOne({ ...base, slug: String(identifier).toLowerCase() });
 }
-
-// @desc    Get Laws with Filters & Pagination
-// @route   GET /api/laws
 exports.getLaws = async (req, res) => {
   try {
     const {
@@ -315,8 +305,6 @@ exports.getLaws = async (req, res) => {
   }
 };
 
-// @desc    Autosuggest for Search Bar
-// @route   GET /api/laws/suggest
 exports.suggestLaws = async (req, res) => {
   try {
     const { q } = req.query;
@@ -337,8 +325,6 @@ exports.suggestLaws = async (req, res) => {
   }
 };
 
-// @desc    Get Single Law by Slug or ID (public)
-// @route   GET /api/laws/:idOrSlug
 exports.getLawById = async (req, res) => {
   try {
     const law = await findLawBySlugOrId(req.params.id, { publicOnly: true });
@@ -349,7 +335,6 @@ exports.getLawById = async (req, res) => {
   }
 };
 
-// --- ADMIN CONTROLLERS ---
 
 exports.adminListLaws = async (req, res) => {
   try {
@@ -394,10 +379,9 @@ exports.updateLaw = async (req, res) => {
 
     if (!updated) return res.status(404).json({ message: 'Law not found' });
 
-    // Re-save once if title/slug changed, to apply slug de-dupe pre-save logic
     const needsSlugRefresh = 'title' in payload || 'slug' in payload;
     if (needsSlugRefresh) {
-      if (!payload.slug && updated.title) updated.slug = undefined; // allow regen
+      if (!payload.slug && updated.title) updated.slug = undefined; 
       await updated.save();
     }
 
@@ -430,8 +414,6 @@ exports.togglePublish = async (req, res) => {
   }
 };
 
-// Optional admin detail (useful later)
-// GET /api/laws/admin/:idOrSlug
 exports.adminGetLaw = async (req, res) => {
   try {
     const law = await findLawBySlugOrId(req.params.id, { publicOnly: false });

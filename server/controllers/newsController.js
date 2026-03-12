@@ -1,20 +1,14 @@
 const News = require('../models/News');
 
-// @desc    Get all news
-// @route   GET /api/news
-// @access  Public
 const getNews = async (req, res) => {
   try {
-    const news = await News.find().sort({ createdAt: -1 }); // Newest first
+    const news = await News.find().sort({ createdAt: -1 }); 
     res.status(200).json(news);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Create new news
-// @route   POST /api/news
-// @access  Private (Admin)
 const createNews = async (req, res) => {
   try {
     const news = await News.create(req.body);
@@ -24,9 +18,6 @@ const createNews = async (req, res) => {
   }
 };
 
-// @desc    Delete news
-// @route   DELETE /api/news/:id
-// @access  Private (Admin)
 const deleteNews = async (req, res) => {
   try {
     const news = await News.findById(req.params.id);

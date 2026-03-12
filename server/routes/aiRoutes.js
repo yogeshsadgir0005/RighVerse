@@ -5,12 +5,12 @@ const {
   getWeeklyLaws, 
   analyzeStory, 
   chatWithAI, 
-  getLawById // <--- Import this
+  getLawById
 } = require('../controllers/aiController');
 
 router.get('/law-of-day', getLatestLaw);
 router.get('/weekly-updates', getWeeklyLaws);
-router.get('/law/:id', getLawById); // <--- Add this route
+router.get('/law/:id', getLawById);
 router.post('/analyze-story', analyzeStory);
 router.post('/chat', chatWithAI);
 

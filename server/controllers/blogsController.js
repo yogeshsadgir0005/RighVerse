@@ -13,7 +13,6 @@ const getBlogs = async (req, res) => {
 
 const buildImageUrl = (req, file) => {
   if (!file) return null;
-  // file.path may contain backslashes on Windows, normalize to URL path
   const relativePath = file.path.split(path.sep).join('/');
   const uploadsIndex = relativePath.indexOf('uploads/');
   const publicPath = uploadsIndex >= 0 ? relativePath.substring(uploadsIndex) : relativePath;
@@ -46,16 +45,15 @@ const deleteBlog = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: 'Blog not found' });
 
-    // Delete associated uploaded file (optional cleanup)
     if (blog.image) {
       try {
         const imageUrl = new URL(blog.image);
-        const filePath = path.join(__dirname, '..', imageUrl.pathname); // pathname starts with /uploads/...
+        const filePath = path.join(__dirname, '..', imageUrl.pathname); 
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
       } catch (err) {
-        // ignore URL parsing/file deletion errors
+      
       }
     }
 
@@ -77,12 +75,12 @@ const updateBlog = async (req, res) => {
 
     let imageUrl = existingBlog.image;
 
-    // If new image uploaded, replace old image
+  
     if (req.file) {
       const newImageUrl = buildImageUrl(req, req.file);
       imageUrl = newImageUrl;
 
-      // Delete old image file
+ 
       if (existingBlog.image) {
         try {
           const oldUrl = new URL(existingBlog.image);
@@ -91,7 +89,7 @@ const updateBlog = async (req, res) => {
             fs.unlinkSync(oldFilePath);
           }
         } catch (err) {
-          // ignore cleanup errors
+        
         }
       }
     }

@@ -20,7 +20,7 @@ import HelpResources from './pages/HelpResources';
 // Global Components
 import Header from './components/Header';
 import Footer from './components/Footer';
-import AIChatbot from './components/AIChatbot'; // <--- 1. Import the Chatbot here
+import AIChatbot from './components/AIChatbot';
 import ScrollToTop from './components/ScrollToTop';
 import Policies from './pages/Policies';
 export default function App() {
@@ -57,7 +57,7 @@ export default function App() {
         
         <Footer />
         
-        {/* 2. Place it here, outside the Routes, so it persists on every page */}
+     
         <AIChatbot /> 
       </div>
     </BrowserRouter>

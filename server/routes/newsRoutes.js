@@ -4,7 +4,6 @@ const { getNews, createNews, deleteNews, updateNews, getNewsById } = require('..
 
 router.route('/').get(getNews).post(createNews);
 
-// Add .get(getNewsById) here
 router.route('/:id')
   .get(getNewsById)
   .delete(deleteNews)

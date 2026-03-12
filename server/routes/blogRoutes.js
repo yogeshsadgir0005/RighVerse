@@ -12,13 +12,11 @@ const {
   getBlogById
 } = require('../controllers/blogsController');
 
-// Ensure uploads/blogs folder exists
 const uploadDir = path.join(__dirname, '..', 'uploads', 'blogs');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Multer storage config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -32,8 +30,6 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${safeName}${ext}`);
   },
 });
-
-// File filter (images only)
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
@@ -46,16 +42,14 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
+    fileSize: 5 * 1024 * 1024, 
   },
 });
 
-// GET all / POST with image upload
 router.route('/')
   .get(getBlogs)
   .post(upload.single('image'), createBlog);
 
-// GET one / DELETE / PUT with optional image upload
 router.route('/:id')
   .get(getBlogById)
   .delete(deleteBlog)

@@ -20,11 +20,11 @@ const faqSchema = new mongoose.Schema(
 
 const judgmentSchema = new mongoose.Schema(
   {
-    caseName: { type: String, trim: true },   // canonical
+    caseName: { type: String, trim: true }, 
     court: { type: String, trim: true },
     year: { type: String, trim: true },
     citation: { type: String, trim: true },
-    holding: { type: String, trim: true },    // canonical
+    holding: { type: String, trim: true },   
     link: { type: String, trim: true },
   },
   { _id: false }
@@ -32,10 +32,10 @@ const judgmentSchema = new mongoose.Schema(
 
 const amendmentSchema = new mongoose.Schema(
   {
-    date: { type: Date },                     // richer structure
-    summary: { type: String, trim: true },    // canonical summary
-    type: { type: String, trim: true },       // optional label/category
-    note: { type: String, trim: true },       // optional extra note
+    date: { type: Date },                    
+    summary: { type: String, trim: true },  
+    type: { type: String, trim: true },    
+    note: { type: String, trim: true },     
   },
   { _id: false }
 );
@@ -51,7 +51,6 @@ const resourceSchema = new mongoose.Schema(
 
 const lawSchema = new mongoose.Schema(
   {
-    // --- METADATA ---
     title: { type: String, required: true, trim: true },
     slug: { type: String, trim: true, lowercase: true, unique: true, sparse: true },
     statuteName: { type: String, trim: true },
@@ -62,18 +61,15 @@ const lawSchema = new mongoose.Schema(
       enum: ['statute', 'case'],
       default: 'statute',
     },
-    courtLevel: { type: String, trim: true }, // e.g. Supreme Court
-    jurisdiction: { type: String, trim: true }, // e.g. India, Delhi
-    practiceArea: { type: String, trim: true }, // e.g. Criminal, IPR
-
-    // --- SEARCH & TAGS ---
+    courtLevel: { type: String, trim: true },
+    jurisdiction: { type: String, trim: true },
+    practiceArea: { type: String, trim: true },
     keywords: [{ type: String, trim: true }],
     sections: [{ type: String, trim: true }],
     situations: [{ type: String, trim: true }],
     tags: [{ type: String, trim: true }],
     relevanceScore: { type: Number, default: 0 },
 
-    // --- CITIZEN VIEW ---
     citizen: {
       summary: { type: String, trim: true },
       whatThisMeans: { type: String, trim: true },
@@ -84,7 +80,6 @@ const lawSchema = new mongoose.Schema(
       faqs: [faqSchema],
     },
 
-    // --- LAWYER VIEW ---
     lawyer: {
       officialText: { type: String, trim: true },
       interpretation: { type: String, trim: true },
@@ -95,25 +90,21 @@ const lawSchema = new mongoose.Schema(
       commentary: { type: String, trim: true },
     },
 
-    // --- RESOURCES ---
     resources: [resourceSchema],
 
     isPublished: { type: Boolean, default: false },
   },
   {
-    timestamps: true, // adds createdAt + updatedAt
+    timestamps: true, 
   }
 );
 
-// Generate slug automatically if missing
-// Generate slug automatically if missing
 lawSchema.pre('validate', function () {
   if (!this.slug && this.title) {
     this.slug = slugify(this.title);
   }
 });
 
-// Ensure unique slug by suffixing if needed (only on new docs or slug changed)
 lawSchema.pre('save', async function () {
   if (!this.slug && this.title) this.slug = slugify(this.title);
 
@@ -135,7 +126,6 @@ lawSchema.pre('save', async function () {
   }
 });
 
-// Index for text search
 lawSchema.index({
   title: 'text',
   statuteName: 'text',
@@ -147,7 +137,6 @@ lawSchema.index({
   tags: 'text',
 });
 
-// Optional targeted indexes
 lawSchema.index({ isPublished: 1, createdAt: -1 });
 
 

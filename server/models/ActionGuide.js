@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const actionGuideSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  steps: [{ type: String, required: true }], // Dynamic array of strings
+  steps: [{ type: String, required: true }], 
   createdAt: { type: Date, default: Date.now }
 });
 

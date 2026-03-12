@@ -1,4 +1,4 @@
-// backend/controllers/aiController.js
+
 const DailyLaw = require('../models/DailyLaw');
 const Parser = require('rss-parser');
 const OpenAI = require('openai');
@@ -9,14 +9,12 @@ const parser = new Parser();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Added 'Google News - India Courts' feed for more specific legal news
 const NEWS_SOURCES = [
   'https://news.google.com/rss/search?q=India+Supreme+Court+High+Court+Verdict+Legal&hl=en-IN&gl=IN&ceid=IN:en',
   'https://www.livelaw.in/rss/latest-news', 
   'https://news.abplive.com/home/feed' 
 ];
 
-// --- HELPER: Download Image & Save Locally ---
 async function downloadAndSaveImage(url, prefix) {
   try {
     const uploadsDir = path.join(__dirname, '../uploads');
@@ -56,11 +54,8 @@ async function downloadAndSaveImage(url, prefix) {
     return null;
   }
 }
-
-// In-memory lock to prevent double-generation from concurrent frontend requests
 let generationPromise = null;
 
-// --- HELPER: The Core Logic to Fetch & Save ---
 const generateAndSaveDailyLaw = async () => {
   if (generationPromise) {
     console.log("⏳ Generation already in progress. Waiting for it to finish to prevent duplicate API calls...");
@@ -76,7 +71,6 @@ const generateAndSaveDailyLaw = async () => {
 
       console.log("⏳ Starting Daily Law Cron Job...");
       
-      // 🛑 FIX 1: Fetch recent laws from the database to check for duplicates
       const pastLaws = await DailyLaw.find().sort({ date: -1 }).limit(10);
       const usedLinks = pastLaws.map(law => law.sourceLink);
 
@@ -86,15 +80,12 @@ const generateAndSaveDailyLaw = async () => {
         try {
           const feed = await parser.parseURL(source);
           
-          // 🛑 FIX 2: Filter out any items whose link is already in our DB
           const freshItems = feed.items.filter(item => !usedLinks.includes(item.link));
-          
-          // Take top 5 *fresh* items from each feed
+    
           allNewsItems.push(...freshItems.slice(0, 5)); 
         } catch (err) { console.error(`Feed Error: ${err.message}`); }
       }
 
-      // Fallback: If absolutely no fresh news is found, grab top unfiltered news to avoid crashing
       if (allNewsItems.length === 0) {
         console.log("⚠️ No fresh news found. Falling back to default feeds.");
         for (const source of NEWS_SOURCES) {
@@ -103,7 +94,6 @@ const generateAndSaveDailyLaw = async () => {
         }
       }
 
-      // Prepare list for AI
       const headlinesText = allNewsItems.map((item, i) => `${i+1}. ${item.title} (Link: ${item.link})`).join('\n');
 
       // 2. OpenAI Generation (UPDATED PROMPT)
@@ -140,7 +130,6 @@ const generateAndSaveDailyLaw = async () => {
 
       const aiData = JSON.parse(completion.choices[0].message.content.replace(/```json|```/g, '').trim());
 
-      // --- GENERATE IMAGE WITH DALL-E AND SAVE LOCALLY ---
       try {
         console.log("🎨 Generating contextual image for:", aiData.title);
         const imageResponse = await openai.images.generate({
@@ -195,7 +184,6 @@ exports.getLatestLaw = async (req, res) => {
     let latest = await DailyLaw.findOne().sort({ date: -1 });
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // Check if data is stale OR missing
     if (!latest || latest.fetchDateString !== todayStr) {
       console.log("⚠️ Fetching fresh legal case study for today...");
       latest = await generateAndSaveDailyLaw();
@@ -218,7 +206,6 @@ exports.getWeeklyLaws = async (req, res) => {
   }
 };
 
-// --- FIX: UPDATED STORY ANALYSIS PROMPT ---
 exports.analyzeStory = async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ message: "Story text is required" });
@@ -250,7 +237,7 @@ exports.analyzeStory = async (req, res) => {
         { role: "system", content: "You are a helpful AI Legal Assistant. You output strictly valid JSON." },
         { role: "user", content: prompt }
       ],
-      response_format: { type: "json_object" } // Guarantees JSON output
+      response_format: { type: "json_object" }
     });
 
     const result = JSON.parse(completion.choices[0].message.content.trim());
@@ -270,7 +257,6 @@ function detectLanguage(message = "") {
 
   const lower = text.toLowerCase();
 
-  // 1. Explicit language request wins
   if (
     lower.includes("in english") ||
     lower.includes("answer in english") ||
@@ -305,9 +291,8 @@ function detectLanguage(message = "") {
     return "Marathi";
   }
 
-  // 2. Detect Devanagari script
   if (/[\u0900-\u097F]/.test(text)) {
-    // Simple Marathi hints
+
     if (
       /[ळ]/.test(text) ||
       /\b(आहे|माहिती|काय|मध्ये|सांगा|मराठी|अटक|हक्क)\b/.test(text)
@@ -318,12 +303,10 @@ function detectLanguage(message = "") {
     return "Hindi";
   }
 
-  // 3. If it contains Latin letters, assume English
   if (/[a-zA-Z]/.test(text)) {
     return "English";
   }
 
-  // 4. Safe fallback
   return "English";
 }
 

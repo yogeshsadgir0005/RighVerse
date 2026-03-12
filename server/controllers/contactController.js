@@ -8,28 +8,25 @@ exports.submitContactForm = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
-    // 1. Save to Database
     console.log("Attempting to save to database...");
     const newContact = new Contact({ name, email, subject, message });
     await newContact.save();
     console.log("✅ Successfully saved contact to database. Record ID:", newContact._id);
 
-    // 2. Send Email via Brevo API
     console.log("Preparing to send email via Brevo...");
     const brevoApiKey = process.env.BREVO_API_KEY; 
-    const receiverEmail = process.env.RECEIVER_EMAIL; // This is yogeshsadgir05@gmail.com
+    const receiverEmail = process.env.RECEIVER_EMAIL;
 
-    // Safety check for ENV variables
     if (!brevoApiKey || !receiverEmail) {
       console.error("❌ CRITICAL ERROR: Missing BREVO_API_KEY or RECEIVER_EMAIL in environment variables!");
       return res.status(500).json({ success: false, message: 'Server configuration error' });
     }
 
     const emailData = {
-      // 👇 CRITICAL FIX: The sender email MUST be the one verified in your Brevo account
+
       sender: { name: "Platform Contact Form", email: receiverEmail }, 
       to: [{ email: receiverEmail, name: "Admin" }],
-      replyTo: { email: email, name: name }, // If you hit "reply", it will reply to the user's email
+      replyTo: { email: email, name: name },
       subject: `New Contact Inquiry: ${subject}`,
       htmlContent: `
         <h3>New Contact Form Submission</h3>

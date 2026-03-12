@@ -22,7 +22,6 @@ export default function Blogs() {
       });
   }, []);
 
-  // 12. Scroll Reveal Observer
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -43,7 +42,6 @@ export default function Blogs() {
   const handleArticleClick = (e, id) => {
     e.preventDefault();
     setNavigatingId(id);
-    // 9. Blog Card Click Transition (Wait for animation before navigating)
     setTimeout(() => {
       navigate(`/blogs/${id}`);
     }, 400); 

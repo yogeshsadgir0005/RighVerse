@@ -14,10 +14,8 @@ export default function YourVoice() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // Expanded Story Modal State
   const [expandedStory, setExpandedStory] = useState(null);
 
-  // Success Message State (from Redirection)
   const location = useLocation();
   const navigate = useNavigate();
   const [toastMsg, setToastMsg] = useState(location.state?.message || null);
@@ -53,12 +51,10 @@ export default function YourVoice() {
     return () => observer.disconnect();
   }, [loading, stories, activeCategory, searchQuery]);
 
-  // Filtering Logic (Search + Category)
   const filteredStories = stories.filter(s => {
     const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (s.redactedBody && s.redactedBody.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    // Fallback "General" to "Other" for filtering purposes if it doesn't match predefined categories
     const storyCat = s.category && s.category !== "General" ? s.category : "Other";
     const matchesCat = activeCategory === 'All' || storyCat.includes(activeCategory);
     
@@ -248,15 +244,14 @@ export default function YourVoice() {
 function StoryCard({ data }) {
   const dateStr = new Date(data.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   
-  // Local state to handle likes instantly in the UI
   const [supports, setSupports] = useState(data.supports || 0);
   const [hasSupported, setHasSupported] = useState(false);
 
   const handleSupport = async (e) => {
-    e.stopPropagation(); // Prevents the card from expanding when clicking the button
-    if (hasSupported) return; // Prevent multiple clicks in one session
+    e.stopPropagation(); 
+    if (hasSupported) return; 
     
-    // Optimistically update UI
+  
     setSupports(prev => prev + 1);
     setHasSupported(true);
 
@@ -264,7 +259,7 @@ function StoryCard({ data }) {
       await axios.put(`/stories/${data._id}/support`);
     } catch (err) {
       console.error("Failed to support story:", err);
-      // Revert UI if the API call fails
+   
       setSupports(prev => prev - 1);
       setHasSupported(false);
     }

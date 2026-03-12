@@ -20,13 +20,11 @@ export default function NewsDetail() {
       });
   }, [id]);
 
-  // --- Image Resolver using BASE_URL ---
   const resolveImage = (imgPath) => {
     const fallbackImg = "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=1200";
     if (!imgPath) return fallbackImg;
     if (imgPath.startsWith('http') || imgPath.startsWith('data:')) return imgPath;
     
-    // Safely extract the root URL (removes '/api' if BASE_URL includes it)
     const rootUrl = BASE_URL ? BASE_URL.replace(/\/api\/?$/, '') : 'http://localhost:5000';
     return `${rootUrl}${imgPath.startsWith('/') ? '' : '/'}${imgPath}`;
   };

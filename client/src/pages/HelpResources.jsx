@@ -155,7 +155,6 @@ export default function HelpResources() {
   );
 }
 
-// --- SUB-COMPONENTS ---
 
 function TabButton({ active, onClick, color, activeColor, icon, label, subtext }) {
   return (
@@ -173,7 +172,7 @@ function TabButton({ active, onClick, color, activeColor, icon, label, subtext }
 }
 
 function ResourceCard({ title, subtitle, items, mainCta, type = "urgent" }) {
-  // Correct Color Direction based on type
+
   const themeColors = {
     urgent: { text: "text-[#8C2F2F]", bg: "bg-[#8C2F2F]", lightBg: "bg-[#8C2F2F]/10" },
     needed: { text: "text-[#C6A76A]", bg: "bg-[#C6A76A]", lightBg: "bg-[#C6A76A]/10" },
@@ -183,7 +182,6 @@ function ResourceCard({ title, subtitle, items, mainCta, type = "urgent" }) {
   const theme = themeColors[type];
   
   return (
-    // Card Background Alignment: Warm Ivory Cards (#FBF8F2)
     <div className={`directory-card bg-[#FBF8F2] border border-[#D2C4AE] rounded-[24px] p-8 flex flex-col`}>
       <h3 className="text-2xl font-serif font-bold text-[#785F3F] mb-1">{title}</h3>
       <p className="text-[11px] font-bold text-[#D2C4AE] uppercase tracking-widest mb-6">{subtitle}</p>
@@ -226,7 +224,6 @@ function ResourceCard({ title, subtitle, items, mainCta, type = "urgent" }) {
 
 function CategoryCard({ title, links }) {
   return (
-    // Card Background Alignment: Warm Ivory Cards (#FBF8F2)
     <div className="directory-card bg-[#FBF8F2] p-8 rounded-[24px] border border-[#D2C4AE]">
        <h3 className="font-serif font-bold text-xl mb-6 text-[#785F3F]">{title}</h3>
        <ul className="space-y-4">
@@ -248,7 +245,6 @@ function CategoryCard({ title, links }) {
   );
 }
 
-// --- CONTENT RENDERING ---
 
 function UrgentContent() {
   return (

@@ -227,13 +227,12 @@ export default function Policies() {
   const [activeTab, setActiveTab] = useState('privacy');
   const [openAccordion, setOpenAccordion] = useState(0);
 
-  // Switch tab based on URL query (?tab=safety)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
     if (tab && policiesData[tab]) {
       setActiveTab(tab);
-      setOpenAccordion(0); // Reset accordion on tab switch
+      setOpenAccordion(0); 
     }
   }, [location]);
 
