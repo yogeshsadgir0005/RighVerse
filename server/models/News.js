@@ -6,7 +6,7 @@ const newsSchema = mongoose.Schema({
   summary: { type: String, required: true },
   image: { type: String },
   isHighlight: { type: Boolean, default: false },
-  timestamps: true,
-});
+ 
+},{ timestamps: true});
 
 module.exports = mongoose.model('News', newsSchema);

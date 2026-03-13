@@ -4,6 +4,10 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+const dns = require('dns');
+
+
+dns.setServers(["1.1.1.1","8.8.8.8"]);
 
 const cron = require('node-cron'); 
 const path = require('path');

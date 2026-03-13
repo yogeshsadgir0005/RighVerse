@@ -8,7 +8,7 @@ const dailyLawSchema = new mongoose.Schema({
   whyItMatters: { type: String },
   sourceLink: { type: String },
   imageUrl: { type: String }, 
-  date: { type: Date, default: Date.now }, 
+  date: { type: Date, default: Date.now },  
   fetchDateString: { type: String, unique: true } 
 });
 

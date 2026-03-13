@@ -5,7 +5,6 @@ import {
   Calendar,
   User,
   ArrowLeft,
-  Loader2,
   BookOpen,
   Clock3,
 } from 'lucide-react';
@@ -97,14 +96,40 @@ export default function ArticleDetail() {
 
       <article className="relative z-10">
         {/* Top wrapper */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
-      
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
+          
           {/* Hero card */}
           <div className="rounded-3xl border border-[#E2D5C2] bg-white/75 backdrop-blur-sm shadow-[0_10px_30px_rgba(90,60,20,0.06)] overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-12">
-              {/* Left content */}
-              <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10">
+            <div className="flex flex-col">
+              
+              {article.image ? (
+                <div className="relative w-full h-[250px] sm:h-[350px] md:h-[650px] bg-[#EFE4D2]">
+                  {!imgLoaded && (
+                    <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#EEE1CD] via-[#F6EEDF] to-[#EEE1CD]" />
+                  )}
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    onLoad={() => setImgLoaded(true)}
+                    className={`h-full w-full object-cover transition duration-500 ${
+                      imgLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'
+                    }`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+                </div>
+              ) : (
+                <div className="w-full p-10 flex items-center justify-center bg-gradient-to-br from-[#F2E7D6] to-[#EADCC5]">
+                  <div className="text-center">
+                    <div className="mx-auto mb-3 h-14 w-14 rounded-2xl bg-white/70 flex items-center justify-center border border-[#E1D1BA]">
+                      <BookOpen className="text-[#A6814C]" />
+                    </div>
+                    <p className="text-[#8A6D45] font-medium">No cover image uploaded</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Bottom content */}
+              <div className="p-6 sm:p-8 lg:p-12">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F2E6D3] text-[#8C6A3D] text-xs font-bold uppercase tracking-wider mb-4">
                   <BookOpen size={14} />
                   Editorial Blog
@@ -120,20 +145,21 @@ export default function ArticleDetail() {
                   </p>
                 )}
 
- {/* Content renderer */}
-            {isHtmlContent ? (
-              <div
-                className="prose prose-lg max-w-none prose-headings:text-[#6F4F2A] prose-p:text-[#5F4729] prose-p:leading-8 prose-strong:text-[#5B4121] prose-a:text-[#8A673A] prose-li:text-[#5F4729] prose-blockquote:text-[#7A5C35] prose-blockquote:border-[#D8C4A1]"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-              />
-            ) : (
-              <div className="whitespace-pre-wrap text-[17px] sm:text-[18px] leading-8 text-[#5F4729]">
-                {article.content}
-              </div>
-            )}
-    
+                {/* Content renderer */}
+                <div className="mt-8">
+                  {isHtmlContent ? (
+                    <div
+                      className="prose prose-lg max-w-none prose-headings:text-[#6F4F2A] prose-p:text-[#5F4729] prose-p:leading-8 prose-strong:text-[#5B4121] prose-a:text-[#8A673A] prose-li:text-[#5F4729] prose-blockquote:text-[#7A5C35] prose-blockquote:border-[#D8C4A1]"
+                      dangerouslySetInnerHTML={{ __html: article.content }}
+                    />
+                  ) : (
+                    <div className="whitespace-pre-wrap text-[17px] sm:text-[18px] leading-8 text-[#5F4729]">
+                      {article.content}
+                    </div>
+                  )}
+                </div>
 
-                <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
+                <div className="mt-10 pt-6 border-t border-[#E8DAC4] flex flex-wrap items-center gap-3 sm:gap-4 text-sm">
                   <div className="inline-flex items-center gap-2 rounded-full border border-[#E8DAC4] bg-[#FFFDF8] px-3 py-2 text-[#7A5C35]">
                     <User size={16} className="text-[#A6814C]" />
                     <span className="font-semibold">{article.author || 'Unknown Author'}</span>
@@ -153,39 +179,11 @@ export default function ArticleDetail() {
                 </div>
               </div>
 
-              {/* Right image (if exists) */}
-              {article.image ? (
-                <div className="lg:col-span-5 relative min-h-[260px] lg:min-h-full bg-[#EFE4D2]">
-                  {!imgLoaded && (
-                    <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-[#EEE1CD] via-[#F6EEDF] to-[#EEE1CD]" />
-                  )}
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    onLoad={() => setImgLoaded(true)}
-                    className={`h-full w-full object-cover transition duration-500 ${
-                      imgLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.02]'
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
-                </div>
-              ) : (
-                <div className="lg:col-span-5 p-6 sm:p-8 flex items-center justify-center bg-gradient-to-br from-[#F2E7D6] to-[#EADCC5]">
-                  <div className="text-center">
-                    <div className="mx-auto mb-3 h-14 w-14 rounded-2xl bg-white/70 flex items-center justify-center border border-[#E1D1BA]">
-                      <BookOpen className="text-[#A6814C]" />
-                    </div>
-                    <p className="text-[#8A6D45] font-medium">No cover image uploaded</p>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
-        </div>
-
 
           {/* Footer CTA */}
-          <div className="py-8 text-center ">
+          <div className="py-8 text-center">
             <Link
               to="/blogs"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[#DCC8A9] bg-white/80 text-[#7A5C35] font-semibold hover:bg-[#F7F1E7] transition-colors"
@@ -194,7 +192,7 @@ export default function ArticleDetail() {
               Explore More Articles
             </Link>
           </div>
-        
+        </div>
       </article>
     </div>
   );
